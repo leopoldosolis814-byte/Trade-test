@@ -34,7 +34,7 @@ export default async function handler(req, res) {
       
       return res.json({ 
         success: testResponse.ok,
-        message: testResponse.ok ? 'Conectado a Binance Testnet' : 'Error de conexión'
+        message: testResponse.ok ? '✅ Conectado a Binance Testnet' : '❌ Error de conexión'
       });
     }
 
@@ -205,4 +205,4 @@ export default async function handler(req, res) {
       error: error.message || 'Error interno del servidor' 
     });
   }
-  }
+          }
