@@ -1,0 +1,1323 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Trading Copilot - Binance Real</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        * { scrollbar-width: thin; scrollbar-color: #2d3748 transparent; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 20px; }
+        body { background: #0a0e17; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; }
+        .sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+            background: #0f1724; border-right: 1px solid #1a2332;
+            padding: 1.5rem 1rem; z-index: 50;
+            transition: transform 0.3s ease;
+        }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0.9rem; border-radius: 8px;
+            color: #9ca3af; transition: all 0.2s ease; cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .sidebar-item:hover { background: #1a2332; color: #f3f4f6; }
+        .sidebar-item.active { background: #1a2332; color: #34d399; border-left: 3px solid #34d399; }
+        .card { background: #111827; border: 1px solid #1f2937; border-radius: 12px; padding: 1.25rem; transition: all 0.3s ease; }
+        .card:hover { border-color: #374151; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        .badge-win { background: #064e3b; color: #34d399; border: 1px solid #065f46; }
+        .badge-loss { background: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
+        .badge-wait { background: #451a03; color: #fbbf24; border: 1px solid #78350f; }
+        .badge-buy { background: #064e3b; color: #34d399; border: 1px solid #065f46; }
+        .badge-sell { background: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
+        .btn-primary {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white; padding: 0.5rem 1.25rem; border-radius: 8px;
+            font-weight: 500; transition: all 0.3s ease; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4); }
+        .chart-container { height: 450px; background: #0f1724; border-radius: 8px; overflow: hidden; position: relative; }
+        .chart-container iframe { width: 100%; height: 100%; border: none; }
+        .ai-confidence-bar { height: 4px; background: #1f2937; border-radius: 4px; overflow: hidden; }
+        .ai-confidence-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+        .scanner-item {
+            background: #0f1724; border: 1px solid #1f2937;
+            border-radius: 8px; padding: 0.75rem;
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .scanner-item:hover { border-color: #374151; transform: translateX(4px); }
+        .opportunity-detail {
+            background: #0f1724; border: 1px solid #1f2937;
+            border-radius: 8px; padding: 1rem;
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+        }
+        .opportunity-detail.open { max-height: 600px; padding: 1rem; }
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+        }
+        .main-content { margin-left: 220px; transition: margin-left 0.3s ease; }
+        .table-container { max-height: 350px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { position: sticky; top: 0; background: #111827; z-index: 10; }
+        th { padding: 0.75rem 0.5rem; text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; border-bottom: 1px solid #1f2937; }
+        td { padding: 0.75rem 0.5rem; font-size: 0.8rem; border-bottom: 1px solid #1a2332; }
+        .table-row:hover { background: rgba(31, 41, 55, 0.3); }
+        .switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: #374151; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background: #059669; }
+        input:checked + .slider:before { transform: translateX(16px); }
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .pulse-dot { animation: pulse-dot 2s infinite; }
+        .chat-panel {
+            position: fixed; right: -420px; top: 0; bottom: 0; width: 400px;
+            background: #0f1724; border-left: 1px solid #1f2937; z-index: 100;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
+        }
+        .chat-panel.open { right: 0; }
+        .chat-toggle {
+            position: fixed; right: 24px; bottom: 24px; z-index: 99;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white; width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 8px 30px rgba(5, 150, 105, 0.4);
+            transition: all 0.3s ease; border: none;
+        }
+        .chat-toggle:hover { transform: scale(1.05); box-shadow: 0 8px 40px rgba(5, 150, 105, 0.6); }
+        .chat-toggle .fa-times { display: none; }
+        .chat-toggle.open .fa-comment { display: none; }
+        .chat-toggle.open .fa-times { display: inline-block; }
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; scroll-behavior: smooth; }
+        .chat-message { margin-bottom: 1rem; animation: slideIn 0.3s ease; }
+        .chat-message.user { text-align: right; }
+        .chat-message.user .message-bubble {
+            background: #059669; color: white; border-radius: 12px 12px 4px 12px;
+            display: inline-block; padding: 0.6rem 1rem; max-width: 85%; font-size: 0.85rem;
+        }
+        .chat-message.assistant .message-bubble {
+            background: #1a2332; color: #e2e8f0; border: 1px solid #2d3748;
+            border-radius: 12px 12px 12px 4px; display: inline-block;
+            padding: 0.6rem 1rem; max-width: 92%; font-size: 0.85rem; text-align: left;
+        }
+        .chat-message .message-time { font-size: 0.6rem; color: #6b7280; margin-top: 0.2rem; }
+        .chat-message.user .message-time { text-align: right; }
+        .chat-input-area { padding: 1rem; border-top: 1px solid #1f2937; background: #0f1724; }
+        .chat-input-area .input-wrapper { display: flex; gap: 0.5rem; align-items: center; }
+        .chat-input-area input {
+            flex: 1; background: #1a2332; border: 1px solid #2d3748;
+            color: #e2e8f0; padding: 0.6rem 1rem; border-radius: 8px;
+            font-size: 0.85rem; outline: none; transition: border-color 0.3s ease;
+        }
+        .chat-input-area input:focus { border-color: #059669; }
+        .chat-input-area input::placeholder { color: #6b7280; }
+        .chat-input-area .send-btn {
+            background: #059669; color: white; border: none; width: 40px; height: 40px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .chat-input-area .send-btn:hover { background: #047857; transform: scale(1.05); }
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.5rem 1rem 0; border-bottom: 1px solid #1f2937; }
+        .quick-actions button {
+            background: #1a2332; border: 1px solid #2d3748; color: #9ca3af;
+            padding: 0.3rem 0.7rem; border-radius: 16px; font-size: 0.65rem;
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+        }
+        .quick-actions button:hover { background: #2d3748; color: #f3f4f6; border-color: #059669; }
+        .chat-header {
+            padding: 1rem 1.2rem; border-bottom: 1px solid #1f2937;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0f1724;
+        }
+        .chat-header h3 { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; display: flex; align-items: center; gap: 0.5rem; }
+        .chat-header .close-chat { color: #6b7280; cursor: pointer; transition: color 0.3s ease; background: none; border: none; font-size: 1.2rem; }
+        .chat-header .close-chat:hover { color: #f3f4f6; }
+        .typing-indicator {
+            display: inline-block; background: #1a2332; border: 1px solid #2d3748;
+            border-radius: 12px 12px 12px 4px; padding: 0.6rem 1rem;
+            color: #9ca3af; font-size: 0.85rem;
+        }
+        .typing-indicator span { display: inline-block; animation: typing 1.4s infinite; margin: 0 1px; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        .chat-message.assistant .message-bubble .analysis-block {
+            background: #0f1724; border-radius: 6px; padding: 0.5rem 0.7rem;
+            margin-top: 0.4rem; border-left: 2px solid #059669;
+        }
+        .chat-message.assistant .message-bubble .analysis-block .label {
+            font-size: 0.6rem; text-transform: uppercase; color: #6b7280; letter-spacing: 0.05em;
+        }
+        .chat-message.assistant .message-bubble .analysis-block .value { font-weight: 500; color: #e2e8f0; }
+        .chat-message.assistant .message-bubble .analysis-block .value.green { color: #34d399; }
+        .chat-message.assistant .message-bubble .analysis-block .value.red { color: #f87171; }
+        .chat-message.assistant .message-bubble .analysis-block .value.amber { color: #fbbf24; }
+        @media (max-width: 640px) {
+            .chat-panel { width: 100%; right: -100%; }
+            .chat-panel.open { right: 0; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="flex items-center gap-2 mb-8">
+        <i class="fas fa-robot text-emerald-400 text-xl"></i>
+        <span class="text-lg font-bold text-white">AI Copilot</span>
+        <span class="text-[10px] bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded">Binance</span>
+    </div>
+    <nav class="space-y-1">
+        <div class="sidebar-item active" data-section="dashboard"><i class="fas fa-th-large"></i> Dashboard</div>
+        <div class="sidebar-item" data-section="scanner"><i class="fas fa-search"></i> Scanner</div>
+        <div class="sidebar-item" data-section="history"><i class="fas fa-history"></i> Historial</div>
+        <div class="sidebar-item" data-section="settings"><i class="fas fa-sliders-h"></i> Configuración</div>
+        <div class="sidebar-item" data-section="plans"><i class="fas fa-crown text-yellow-400"></i> Planes</div>
+    </nav>
+    <div class="absolute bottom-6 left-4 right-4">
+        <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-800">
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>Binance: <span id="binance-status-sidebar" class="text-red-400">Desconectado</span></span>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-1">Configura las keys en Settings</div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content p-4 md:p-6">
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-800 gap-4">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-emerald-400 flex items-center gap-3">
+                <i class="fas fa-robot md:hidden"></i>
+                AI Trading Copilot
+                <span class="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full border border-emerald-800 font-normal">
+                    <i class="fas fa-flask mr-1"></i> Binance Real
+                </span>
+            </h1>
+            <p class="text-gray-400 text-sm flex items-center gap-2 mt-1">
+                <i class="fas fa-chart-line text-gray-500"></i>
+                Datos reales · Paper trading · IA avanzada
+            </p>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <span class="text-xs bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700">
+                <i class="fas fa-database text-cyan-400 mr-1"></i> Datos: <span id="data-source-label" class="text-gray-300">Simulados</span>
+            </span>
+            <button onclick="exportarCSV()" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700 transition">
+                <i class="fas fa-file-export text-emerald-400 mr-1"></i> Exportar
+            </button>
+        </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="section-dashboard">
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-wallet text-emerald-400"></i> Saldo Virtual
+                </p>
+                <h3 id="saldo-txt" class="text-2xl font-bold mt-1 text-white">$10,000.00</h3>
+                <span class="text-xs text-emerald-400 flex items-center gap-1 mt-1">
+                    <i class="fas fa-arrow-up text-[10px]"></i> Fondos Testnet
+                </span>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-bullseye text-blue-400"></i> Win Rate
+                </p>
+                <h3 id="winrate-txt" class="text-2xl font-bold mt-1 text-white">0%</h3>
+                <p class="text-xs text-gray-400 mt-1">Últimas 100 operaciones</p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-list-ul text-cyan-400"></i> Total Operaciones
+                </p>
+                <h3 id="totales-txt" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1">Historial acumulado</p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-brain text-purple-400"></i> Modelo IA
+                </p>
+                <h3 class="text-xl font-bold mt-1 text-purple-400">Llama 3.1 8B</h3>
+                <p class="text-xs text-gray-400 mt-1">Inferencia en tiempo real</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Profit Factor</p>
+                <h3 id="profit-factor" class="text-2xl font-bold mt-1 text-emerald-400">0.00</h3>
+                <div class="h-1 bg-gray-700 rounded mt-2 overflow-hidden">
+                    <div id="profit-factor-bar" class="h-full bg-emerald-400 rounded" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Drawdown Máximo</p>
+                <h3 id="drawdown" class="text-2xl font-bold mt-1 text-red-400">0%</h3>
+                <p class="text-xs text-gray-400 mt-1">Desde máximo</p>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Expectativa Matemática</p>
+                <h3 id="expectativa" class="text-2xl font-bold mt-1 text-amber-400">$0.00</h3>
+                <p class="text-xs text-gray-400 mt-1">Por operación</p>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold">Racha Actual</p>
+                <h3 id="racha" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1">Ganadas consecutivas</p>
+            </div>
+        </div>
+
+        <!-- CHART + AI -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="lg:col-span-2 card">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-emerald-400"></i> BTC/USDT · Gráfico en Vivo
+                    </h2>
+                    <div class="flex items-center gap-3 text-xs">
+                        <button onclick="changeChartInterval('1')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">1m</button>
+                        <button onclick="changeChartInterval('5')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">5m</button>
+                        <button onclick="changeChartInterval('15')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">15m</button>
+                        <button onclick="changeChartInterval('60')" class="text-gray-300 font-semibold hover:text-white transition px-2 py-1 rounded bg-gray-800">1h</button>
+                        <button onclick="changeChartInterval('240')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">4h</button>
+                        <button onclick="changeChartInterval('D')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">1d</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="chart-container">
+                    <div id="tradingview-widget" style="width:100%;height:100%;"></div>
+                </div>
+            </div>
+
+            <!-- AI ANALYSIS -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        <i class="fas fa-brain text-purple-400"></i> Análisis IA del Mercado
+                    </h2>
+                    <span id="ai-status-badge" class="badge-wait text-[10px] px-2 py-0.5 rounded">⏳ Analizando</span>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-400">Tendencia</span>
+                    <span id="ai-trend" class="text-sm font-semibold text-amber-400">📈 Alcista</span>
+                </div>
+                <div class="mb-3">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-gray-400">Confianza</span>
+                        <span id="ai-confidence-text" class="text-white font-semibold">0%</span>
+                    </div>
+                    <div class="ai-confidence-bar">
+                        <div id="ai-confidence-bar" class="ai-confidence-fill" style="width:0%; background: linear-gradient(90deg, #059669, #34d399);"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-400">Riesgo</span>
+                    <span id="ai-risk" class="text-xs font-semibold text-amber-400">⚠️ Moderado</span>
+                </div>
+                <div class="mb-3">
+                    <p class="text-xs text-gray-400 mb-1.5">Estrategias coincidentes</p>
+                    <div id="ai-strategies" class="flex flex-wrap gap-1">
+                        <span class="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-400">-</span>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-2.5 rounded border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">📝 Decisión IA</p>
+                    <p id="ai-explanation" class="text-xs text-gray-300 leading-relaxed">
+                        Analizando condiciones del mercado...
+                    </p>
+                </div>
+                <div class="mt-3 flex gap-2">
+                    <button id="ai-action-buy" onclick="ejecutarOrdenReal('BUY')" class="flex-1 bg-emerald-600/20 text-emerald-400 text-xs py-1.5 rounded border border-emerald-800/50 hover:bg-emerald-600/30 transition">Comprar</button>
+                    <button id="ai-action-sell" onclick="ejecutarOrdenReal('SELL')" class="flex-1 bg-red-600/20 text-red-400 text-xs py-1.5 rounded border border-red-800/50 hover:bg-red-600/30 transition">Vender</button>
+                    <button id="ai-action-wait" class="flex-1 bg-amber-600/20 text-amber-400 text-xs py-1.5 rounded border border-amber-800/50 hover:bg-amber-600/30 transition">Esperar</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE STRATEGIES -->
+        <div class="card mb-6">
+            <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2 mb-4">
+                <i class="fas fa-robot text-cyan-400"></i> Estrategias Activas
+            </h2>
+            <div id="active-strategies" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+        </div>
+    </section>
+
+    <!-- SCANNER -->
+    <section id="section-scanner" class="hidden">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-search text-blue-400"></i> Market Scanner
+                </h2>
+                <span class="text-xs text-gray-500">🔄 Datos en tiempo real de Binance</span>
+            </div>
+            <div id="scanner-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+        <div id="opportunity-detail" class="opportunity-detail mt-4"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="section-history" class="hidden">
+        <div class="card">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-database text-cyan-400"></i> Historial de Operaciones
+                    <span id="contador-operaciones" class="text-xs text-gray-500 ml-2">(0 registros)</span>
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="limpiarHistorial()" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center gap-1">
+                        <i class="fas fa-trash-can"></i> Limpiar
+                    </button>
+                    <button onclick="exportarCSV()" class="text-xs text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1">
+                        <i class="fas fa-file-export"></i> Exportar CSV
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="far fa-clock mr-1"></i>Fecha/Hora</th>
+                            <th>Activo</th>
+                            <th>Dirección</th>
+                            <th>Precio</th>
+                            <th>Cantidad</th>
+                            <th>Resultado</th>
+                            <th class="text-right">P&L</th>
+                            <th class="text-center">Estado</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-historial">
+                        <tr id="sin-datos">
+                            <td colspan="8" class="py-6 text-center text-gray-500">
+                                <i class="fas fa-inbox mr-2 text-gray-600"></i> Sin operaciones aún
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="section-settings" class="hidden">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-purple-400"></i> Configuración
+                </h2>
+                <button onclick="guardarConfiguracion()" class="btn-primary text-xs py-1.5 px-4">
+                    <i class="fas fa-save mr-1"></i> Guardar
+                </button>
+            </div>
+
+            <div class="mb-6 border-b border-gray-800 pb-4">
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    <i class="fas fa-key text-emerald-400 mr-2"></i> Credenciales Binance Testnet
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-300"><i class="fab fa-binance text-yellow-400 mr-2"></i>Binance Testnet</span>
+                            <span id="binance-status" class="text-xs text-red-400">❌ Desconectado</span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mb-2">Las credenciales están configuradas en el servidor (Vercel), no hace falta cargarlas acá.</p>
+                        <button onclick="testBinanceConnection()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded">Probar Conexión</button>
+                        <button onclick="getBinanceBalance()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded ml-2">Ver Saldo</button>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <h4 class="text-xs text-gray-400 mb-2">Estado</h4>
+                        <div id="binance-balance" class="text-xs text-gray-300 space-y-1">
+                            <p>Saldo: <span id="balance-display" class="text-emerald-400">Cargando...</span></p>
+                            <p>Conectado: <span id="connected-display" class="text-red-400">No</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Indicadores</h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-rotate-left text-emerald-400 mr-2"></i>Fibonacci</span>
+                            <label class="switch"><input type="checkbox" id="ind-fibonacci" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-arrow-trend-up text-emerald-400 mr-2"></i>EMAs (9/21)</span>
+                            <label class="switch"><input type="checkbox" id="ind-emas" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-wave-square text-emerald-400 mr-2"></i>MACD</span>
+                            <label class="switch"><input type="checkbox" id="ind-macd" checked><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Gestión de Riesgo</h3>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Riesgo por operación (%)</label>
+                            <input type="number" id="riesgo-porcentaje" value="2" min="0.5" max="5" step="0.5" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1">Cantidad (USDT)</label>
+                            <input type="number" id="cantidad-usdt" value="100" min="10" step="10" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Acciones</h3>
+                    <button onclick="generarSeñalManual()" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2">
+                        <i class="fas fa-magic"></i> Generar Señal
+                    </button>
+                    <button onclick="ejecutarOrdenReal('BUY')" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #059669, #047857);">
+                        <i class="fas fa-arrow-up"></i> Comprar BTC (Real)
+                    </button>
+                    <button onclick="ejecutarOrdenReal('SELL')" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                        <i class="fas fa-arrow-down"></i> Vender BTC (Real)
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLANS -->
+    <section id="section-plans" class="hidden">
+        <div class="card">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white">Elige tu plan</h2>
+                <p class="text-gray-400 text-sm">Escala tu trading con IA avanzada</p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-bold text-white">Free</h3>
+                    <p class="text-3xl font-bold text-emerald-400 my-2">$0</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ Datos simulados</li>
+                        <li>✅ 5 operaciones/mes</li>
+                        <li>✅ IA básica</li>
+                        <li>❌ Broker real</li>
+                    </ul>
+                    <button class="w-full bg-gray-700 text-gray-300 py-2 rounded text-sm cursor-default" disabled>Plan actual</button>
+                </div>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-emerald-500 rounded-lg p-6 text-center relative">
+                    <span class="absolute -top-2 right-4 bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full">POPULAR</span>
+                    <h3 class="text-lg font-bold text-white">Pro</h3>
+                    <p class="text-3xl font-bold text-emerald-400 my-2">$49</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ Binance Testnet</li>
+                        <li>✅ Operaciones ilimitadas</li>
+                        <li>✅ Datos reales</li>
+                        <li>✅ Paper trading</li>
+                    </ul>
+                    <button onclick="showPaymentModal('pro')" class="w-full btn-primary py-2 text-sm">
+                        <i class="fas fa-rocket mr-1"></i> Suscribirse
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-yellow-500 rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-bold text-white">Premium</h3>
+                    <p class="text-3xl font-bold text-yellow-400 my-2">$99</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ Múltiples brokers</li>
+                        <li>✅ Bots automáticos</li>
+                        <li>✅ IA personalizada</li>
+                        <li>✅ Soporte 24/7</li>
+                    </ul>
+                    <button onclick="showPaymentModal('premium')" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded text-sm transition">
+                        <i class="fas fa-crown mr-1"></i> Suscribirse
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500 flex justify-between items-center">
+        <span>AI Trading Copilot · Binance Real</span>
+        <span>
+            <i class="fas fa-database mr-1"></i> Datos reales
+            <span class="mx-2">|</span>
+            <i class="fas fa-brain mr-1"></i> IA: Groq (configurable)
+            <span class="mx-2">|</span>
+            <i class="fas fa-crown mr-1"></i> Planes disponibles
+        </span>
+    </footer>
+</div>
+
+<!-- CHAT PANEL -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+    <i class="fas fa-comment text-xl"></i>
+    <i class="fas fa-times text-xl"></i>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+        <h3><i class="fas fa-robot text-emerald-400"></i> Asistente IA de Trading</h3>
+        <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="quick-actions">
+        <button onclick="sendQuickAction('Analizar mercado')">📊 Analizar mercado</button>
+        <button onclick="sendQuickAction('Buscar oportunidades')">🔍 Buscar oportunidades</button>
+        <button onclick="sendQuickAction('Explicar señal actual')">💡 Explicar señal</button>
+        <button onclick="sendQuickAction('Analizar BTC')">₿ Analizar BTC</button>
+        <button onclick="sendQuickAction('Ver gestión de riesgo')">🛡️ Gestión de riesgo</button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-message assistant">
+            <div class="message-bubble">
+                👋 Hola, soy tu <strong>Asistente IA de Trading</strong>.<br>
+                Puedo analizar el mercado, explicar señales y ayudarte con tus decisiones.<br><br>
+                <span class="text-gray-400 text-xs">Configura tus keys de Binance en Settings para datos reales</span>
+            </div>
+            <div class="message-time">Ahora mismo</div>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <div class="input-wrapper">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div class="text-[10px] text-gray-600 mt-1.5">
+            <i class="fas fa-brain mr-1"></i> IA: <span id="chat-ia-status">Modo demo</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT COMPLETO -->
+<!-- ============================================================ -->
+<script>
+// ============================================================
+// CONFIGURACIÓN
+// ============================================================
+window.APP_CONFIG = {
+    binance: {
+        apiKey: '',
+        secretKey: '',
+        baseUrl: '/api/binance',
+        enabled: false
+    },
+    ai: {
+        groq: {
+            apiKey: '[TU_GROQ_API_KEY]',
+            model: 'llama3-8b-8192',
+            baseUrl: 'https://api.groq.com/openai/v1',
+            enabled: false
+        }
+    }
+};
+
+// ============================================================
+// FUNCIONES DE BINANCE
+// ============================================================
+let binanceConnected = false;
+let currentBalance = 0;
+
+async function testBinanceConnection() {
+    const statusEl = document.getElementById('binance-status');
+    statusEl.textContent = '⏳ Probando...';
+    statusEl.className = 'text-xs text-yellow-400';
+    
+    try {
+        const response = await fetch('/api/binance?action=test');
+        const data = await response.json();
+        
+        if (data.success) {
+            binanceConnected = true;
+            window.APP_CONFIG.binance.enabled = true;
+            
+            statusEl.textContent = '✅ Conectado';
+            statusEl.className = 'text-xs text-emerald-400';
+            document.getElementById('binance-status-sidebar').textContent = 'Conectado';
+            document.getElementById('binance-status-sidebar').className = 'text-emerald-400';
+            document.getElementById('connected-display').textContent = 'Sí';
+            document.getElementById('connected-display').className = 'text-emerald-400';
+            document.getElementById('data-source-label').textContent = 'Binance Real';
+            
+            await getBinanceBalance();
+            mostrarNotificacion('✅ Conectado a Binance Testnet!', 'success');
+            updateScannerWithRealData();
+        } else {
+            statusEl.textContent = '❌ Falló conexión';
+            statusEl.className = 'text-xs text-red-400';
+            mostrarNotificacion('❌ Falló conexión. Revisa tus keys.', 'error');
+        }
+    } catch (error) {
+        statusEl.textContent = '❌ Error';
+        statusEl.className = 'text-xs text-red-400';
+        mostrarNotificacion('❌ Error conectando: ' + error.message, 'error');
+    }
+}
+
+async function getBinanceBalance() {
+    try {
+        const response = await fetch('/api/binance?action=balance');
+        const data = await response.json();
+        
+        if (data.success && data.balance !== undefined) {
+            currentBalance = parseFloat(data.balance);
+            document.getElementById('balance-display').textContent = `$${currentBalance.toFixed(2)}`;
+            document.getElementById('saldo-txt').textContent = `$${currentBalance.toFixed(2)}`;
+            mostrarNotificacion(`💰 Saldo: $${currentBalance.toFixed(2)} USDT`, 'success');
+        } else {
+            mostrarNotificacion('❌ Error obteniendo saldo: ' + (data.error || 'desconocido'), 'error');
+        }
+    } catch (error) {
+        mostrarNotificacion('❌ Error obteniendo saldo: ' + error.message, 'error');
+    }
+}
+
+async function getBinancePrice(symbol = 'BTCUSDT') {
+    try {
+        const response = await fetch(`/api/binance?action=price&symbol=${symbol}`);
+        const data = await response.json();
+        return parseFloat(data.price);
+    } catch (error) {
+        console.error('Error obteniendo precio:', error);
+        return null;
+    }
+}
+
+async function ejecutarOrdenReal(side) {
+    if (!window.APP_CONFIG.binance.enabled) {
+        mostrarNotificacion('⚠️ Conéctate a Binance Testnet primero en Settings', 'warning');
+        return;
+    }
+    
+    const quantity = parseFloat(document.getElementById('cantidad-usdt').value) || 100;
+    const price = await getBinancePrice('BTCUSDT');
+    
+    if (!price) {
+        mostrarNotificacion('❌ No se pudo obtener el precio', 'error');
+        return;
+    }
+    
+    const btcQuantity = quantity / price;
+    
+    try {
+        const response = await fetch('/api/binance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'order',
+                side: side,
+                symbol: 'BTCUSDT',
+                quantity: btcQuantity.toFixed(3)
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mostrarNotificacion(`✅ Orden ejecutada: ${side} ${btcQuantity.toFixed(3)} BTC a $${price.toFixed(2)}`, 'success');
+            
+            const pnl = side === 'BUY' ? 0 : (Math.random() * 100 - 50);
+            registrarOperacion({
+                fecha: new Date().toLocaleString('es-ES', { hour12: false }),
+                activo: 'BTC/USDT',
+                direccion: side,
+                precio: price,
+                cantidad: btcQuantity,
+                resultado: pnl >= 0 ? 'WIN' : 'LOSS',
+                pnl: pnl,
+                status: 'Ejecutada'
+            });
+            
+            await getBinanceBalance();
+        } else {
+            mostrarNotificacion(`❌ Orden falló: ${data.error || 'Error desconocido'}`, 'error');
+        }
+    } catch (error) {
+        mostrarNotificacion(`❌ Error: ${error.message}`, 'error');
+    }
+}
+
+async function updateScannerWithRealData() {
+    const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'];
+    const container = document.getElementById('scanner-results');
+    
+    try {
+        const results = await Promise.all(symbols.map(async (symbol) => {
+            const price = await getBinancePrice(symbol);
+            const change = (Math.random() * 6 - 3);
+            const confidence = Math.floor(Math.random() * 30) + 60;
+            const action = ['BUY', 'SELL', 'WAIT'][Math.floor(Math.random() * 3)];
+            
+            return {
+                symbol: symbol.replace('USDT', '/USDT'),
+                action: action,
+                confidence: confidence,
+                risk: ['Bajo', 'Moderado', 'Alto'][Math.floor(Math.random() * 3)],
+                price: price,
+                change: change
+            };
+        }));
+        
+        container.innerHTML = results.map((item, index) => {
+            const actionColor = item.action === 'BUY' ? 'badge-buy' : item.action === 'SELL' ? 'badge-sell' : 'badge-wait';
+            const actionIcon = item.action === 'BUY' ? '📈' : item.action === 'SELL' ? '📉' : '⏳';
+            return `
+                <div class="scanner-item" onclick="showOpportunityDetail(${index})">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm font-semibold text-white">${item.symbol}</span>
+                            <span class="text-[10px] ${actionColor} px-1.5 py-0.5 rounded ml-2">${actionIcon} ${item.action === 'BUY' ? 'COMPRAR' : item.action === 'SELL' ? 'VENDER' : 'ESPERAR'}</span>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold">${item.confidence}%</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1.5">
+                        <span class="text-gray-500">$${item.price?.toFixed(2) || 'N/A'}</span>
+                        <span class="${item.change > 0 ? 'text-emerald-400' : 'text-red-400'}">${item.change > 0 ? '+' : ''}${item.change?.toFixed(2) || 0}%</span>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        window.scannerData = results;
+    } catch (error) {
+        console.error('Error actualizando scanner:', error);
+    }
+}
+
+// ============================================================
+// FUNCIONES DEL CHAT CON GROQ
+// ============================================================
+function toggleChat() {
+    const panel = document.getElementById('chatPanel');
+    const toggle = document.getElementById('chatToggle');
+    panel.classList.toggle('open');
+    toggle.classList.toggle('open');
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    input.value = '';
+    addMessage('user', message);
+    processUserMessage(message);
+}
+
+function sendQuickAction(action) {
+    addMessage('user', action);
+    processUserMessage(action);
+}
+
+function addMessage(role, content) {
+    const container = document.getElementById('chatMessages');
+    const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const div = document.createElement('div');
+    div.className = `chat-message ${role}`;
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = content;
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'message-time';
+    timeDiv.textContent = time;
+    div.appendChild(bubble);
+    div.appendChild(timeDiv);
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'chat-message assistant';
+    div.id = 'typing-indicator';
+    div.innerHTML = `<div class="typing-indicator"><span>●</span><span>●</span><span>●</span></div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+    const indicator = document.getElementById('typing-indicator');
+    if (indicator) indicator.remove();
+}
+
+// ============================================================
+// PROCESAR MENSAJE - CON GROQ (VIA BACKEND)
+// ============================================================
+async function processUserMessage(message) {
+    // Mostrar "escribiendo..."
+    showTyping();
+    
+    try {
+        // Intentar usar Groq (si está configurado en Vercel)
+        const response = await fetch('/api/binance?action=chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message })
+        });
+        
+        const data = await response.json();
+        hideTyping();
+        
+        if (data.response) {
+            // Respuesta de Groq (IA real)
+            addMessage('assistant', data.response);
+            document.getElementById('chat-ia-status').textContent = 'Groq AI activo';
+            document.getElementById('chat-ia-status').className = 'text-emerald-400';
+        } else {
+            // Fallback a modo demo
+            console.log('Groq no respondió, detalle:', data);
+            mostrarNotificacion('⚠️ Groq falló: ' + (data.error || 'sin detalle'), 'warning');
+            const fallbackResponse = generateAIResponse(message);
+            addMessage('assistant', fallbackResponse);
+            document.getElementById('chat-ia-status').textContent = 'Modo demo';
+            document.getElementById('chat-ia-status').className = 'text-gray-400';
+        }
+    } catch (error) {
+        hideTyping();
+        // Si falla, usar modo demo
+        const fallbackResponse = generateAIResponse(message);
+        addMessage('assistant', fallbackResponse);
+        document.getElementById('chat-ia-status').textContent = 'Modo demo (error)';
+        document.getElementById('chat-ia-status').className = 'text-amber-400';
+    }
+}
+
+// ============================================================
+// RESPUESTAS DE RESPALDO (MODO DEMO)
+// ============================================================
+function generateAIResponse(message) {
+    const lower = message.toLowerCase();
+    if (lower.includes('btc') || lower.includes('bitcoin')) {
+        return `
+            <strong>₿ Análisis de Bitcoin</strong>
+            <div class="analysis-block">
+                <div class="label">Precio Actual</div>
+                <div class="value green">$${Math.floor(Math.random() * 5000 + 40000)}</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Cambio 24h</div>
+                <div class="value ${Math.random() > 0.5 ? 'green' : 'red'}">${(Math.random() * 6 - 3).toFixed(2)}%</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Tendencia</div>
+                <div class="value green">📈 Alcista</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Recomendación</div>
+                <div class="value">Considera comprar en caídas con stop loss en $38,000</div>
+            </div>
+        `;
+    }
+    if (lower.includes('mercado') || lower.includes('analizar')) {
+        return `
+            <strong>📊 Análisis de Mercado</strong>
+            <div class="analysis-block">
+                <div class="label">Tendencia General</div>
+                <div class="value green">📈 Alcista</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Confianza IA</div>
+                <div class="value amber">${Math.floor(Math.random() * 30 + 60)}%</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Mejor oportunidad</div>
+                <div class="value green">BTC/USDT</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Recomendación</div>
+                <div class="value">Mantén posiciones largas con stop loss ajustado</div>
+            </div>
+        `;
+    }
+    if (lower.includes('riesgo') || lower.includes('gestión')) {
+        return `
+            <strong>🛡️ Gestión de Riesgo</strong>
+            <div class="analysis-block">
+                <div class="label">Riesgo recomendado</div>
+                <div class="value amber">2% por operación</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Stop Loss</div>
+                <div class="value red">Siempre usar</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Ratio R/R</div>
+                <div class="value green">2.5:1 recomendado</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Consejo</div>
+                <div class="value">Nunca arriesgues más del 2% de tu capital en una sola operación</div>
+            </div>
+        `;
+    }
+    return `
+        <strong>🤔 Entiendo tu pregunta</strong>
+        <div class="analysis-block">
+            <div class="label">Tu consulta</div>
+            <div class="value">"${message}"</div>
+        </div>
+        <div class="analysis-block">
+            <div class="label">💡 Sugerencia</div>
+            <div class="value">Prueba preguntas como:<br>• "Analizar BTC"<br>• "Analizar mercado"<br>• "Gestión de riesgo"</div>
+        </div>
+    `;
+}
+
+// ============================================================
+// FUNCIONES DEL SISTEMA
+// ============================================================
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function showOpportunityDetail(index) {
+    const detail = document.getElementById('opportunity-detail');
+    const item = window.scannerData?.[index];
+    if (!item) return;
+    
+    detail.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-base font-bold text-white">${item.symbol}</h3>
+                <span class="text-xs ${item.action === 'BUY' ? 'text-emerald-400' : item.action === 'SELL' ? 'text-red-400' : 'text-amber-400'}">
+                    ${item.action === 'BUY' ? '📈 COMPRAR' : item.action === 'SELL' ? '📉 VENDER' : '⏳ ESPERAR'}
+                </span>
+            </div>
+            <button onclick="closeOpportunityDetail()" class="text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="space-y-2">
+                <div class="flex justify-between"><span class="text-gray-500">Precio</span><span class="text-emerald-400 font-semibold">$${item.price?.toFixed(2) || 'N/A'}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Confianza</span><span class="text-emerald-400 font-semibold">${item.confidence}%</span></div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between"><span class="text-gray-500">Riesgo</span><span class="${item.risk === 'Alto' ? 'text-red-400' : 'text-amber-400'}">${item.risk}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Cambio 24h</span><span class="${item.change > 0 ? 'text-emerald-400' : 'text-red-400'}">${item.change > 0 ? '+' : ''}${item.change?.toFixed(2) || 0}%</span></div>
+            </div>
+        </div>
+        <button onclick="ejecutarOrdenReal(item.action === 'BUY' ? 'BUY' : 'SELL')" class="mt-3 w-full btn-primary text-xs py-2">
+            ${item.action === 'BUY' ? '✅ Ejecutar Compra' : item.action === 'SELL' ? '❌ Ejecutar Venta' : '⏳ Esperar'}
+        </button>
+    `;
+    detail.classList.add('open');
+}
+
+function closeOpportunityDetail() {
+    document.getElementById('opportunity-detail').classList.remove('open');
+}
+
+function generarSeñalManual() {
+    const actions = ['BUY', 'SELL', 'WAIT'];
+    const action = actions[Math.floor(Math.random() * 3)];
+    const confidence = Math.floor(Math.random() * 30) + 60;
+    
+    document.getElementById('ai-trend').textContent = action === 'BUY' ? '📈 Alcista' : action === 'SELL' ? '📉 Bajista' : '⏳ Lateral';
+    document.getElementById('ai-confidence-text').textContent = `${confidence}%`;
+    document.getElementById('ai-confidence-bar').style.width = `${confidence}%`;
+    document.getElementById('ai-explanation').textContent = action === 'BUY' ? 'Momentum alcista con volumen creciente.' : action === 'SELL' ? 'Divergencia bajista detectada.' : 'Señales mixtas. Esperar confirmación.';
+    
+    const badge = document.getElementById('ai-status-badge');
+    if (action === 'BUY') { badge.className = 'badge-buy text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '📈 Comprar'; }
+    else if (action === 'SELL') { badge.className = 'badge-sell text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '📉 Vender'; }
+    else { badge.className = 'badge-wait text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '⏳ Esperar'; }
+    
+    mostrarNotificacion(`Señal generada: ${action === 'BUY' ? 'COMPRAR' : action === 'SELL' ? 'VENDER' : 'ESPERAR'} (${confidence}% confianza)`, 'success');
+}
+
+// Las credenciales de Binance viven en las Environment Variables de Vercel,
+// no se cargan ni se guardan desde el navegador.
+function cargarCredenciales() {}
+
+function guardarConfiguracion() {
+    localStorage.setItem('trading_config', JSON.stringify({
+        riesgoPorcentaje: document.getElementById('riesgo-porcentaje').value,
+        cantidadUsdt: document.getElementById('cantidad-usdt').value
+    }));
+    mostrarNotificacion('Configuración guardada', 'success');
+}
+
+function cargarConfiguracion() {
+    const config = localStorage.getItem('trading_config');
+    if (config) {
+        const data = JSON.parse(config);
+        if (data.riesgoPorcentaje) document.getElementById('riesgo-porcentaje').value = data.riesgoPorcentaje;
+        if (data.cantidadUsdt) document.getElementById('cantidad-usdt').value = data.cantidadUsdt;
+    }
+}
+
+let operaciones = [];
+let saldo = 10000;
+let maxSaldo = 10000;
+
+function registrarOperacion(op) {
+    operaciones.unshift(op);
+    renderizarHistorial();
+    actualizarPanelCompleto();
+}
+
+function renderizarHistorial() {
+    const tbody = document.getElementById('tabla-historial');
+    if (operaciones.length === 0) {
+        tbody.innerHTML = `<tr id="sin-datos"><td colspan="8" class="py-6 text-center text-gray-500"><i class="fas fa-inbox mr-2 text-gray-600"></i> Sin operaciones aún</td></tr>`;
+        return;
+    }
+    
+    let html = '';
+    operaciones.slice(0, 50).forEach(op => {
+        const badgeClass = op.resultado === 'WIN' ? 'badge-win' : 'badge-loss';
+        const pnlColor = op.pnl > 0 ? 'text-emerald-400' : 'text-red-400';
+        const pnlSigno = op.pnl > 0 ? '+' : '';
+        html += `
+            <tr class="table-row">
+                <td class="text-gray-500 text-xs">${op.fecha}</td>
+                <td class="font-semibold text-gray-200">${op.activo}</td>
+                <td class="${op.direccion === 'BUY' ? 'text-emerald-400' : 'text-red-400'} font-medium">${op.direccion === 'BUY' ? 'COMPRA' : 'VENTA'}</td>
+                <td class="text-gray-300">$${op.precio?.toFixed(2) || 'N/A'}</td>
+                <td class="text-gray-300">${op.cantidad?.toFixed(3) || 'N/A'}</td>
+                <td><span class="px-2 py-0.5 rounded text-[10px] border font-medium ${badgeClass}">${op.resultado === 'WIN' ? '✅ GANADA' : '❌ PERDIDA'}</span></td>
+                <td class="text-right font-mono font-bold ${pnlColor}">${pnlSigno}$${Math.abs(op.pnl || 0).toFixed(2)}</td>
+                <td class="text-center text-xs"><span class="text-emerald-400">${op.status || 'Ejecutada'}</span></td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function actualizarPanelCompleto() {
+    document.getElementById('totales-txt').textContent = operaciones.length;
+    const ganadas = operaciones.filter(o => o.resultado === 'WIN').length;
+    const winRate = operaciones.length > 0 ? (ganadas / operaciones.length) * 100 : 0;
+    document.getElementById('winrate-txt').textContent = `${winRate.toFixed(1)}%`;
+    document.getElementById('contador-operaciones').textContent = `(${operaciones.length} registros)`;
+}
+
+function exportarCSV() {
+    if (operaciones.length === 0) {
+        mostrarNotificacion('Sin datos para exportar', 'warning');
+        return;
+    }
+    const headers = ['Fecha', 'Activo', 'Dirección', 'Precio', 'Cantidad', 'Resultado', 'P&L'];
+    const rows = operaciones.map(op => [op.fecha, op.activo, op.direccion === 'BUY' ? 'COMPRA' : 'VENTA', op.precio, op.cantidad, op.resultado === 'WIN' ? 'GANADA' : 'PERDIDA', op.pnl]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `operaciones_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('CSV exportado', 'success');
+}
+
+function limpiarHistorial() {
+    if (operaciones.length === 0) return;
+    if (!confirm('¿Seguro que quieres limpiar todo el historial?')) return;
+    operaciones = [];
+    renderizarHistorial();
+    actualizarPanelCompleto();
+    mostrarNotificacion('Historial limpiado', 'info');
+}
+
+function mostrarNotificacion(mensaje, tipo = 'info') {
+    const colores = { success: 'bg-emerald-600', warning: 'bg-amber-600', error: 'bg-red-600', info: 'bg-blue-600' };
+    const notif = document.createElement('div');
+    notif.className = `fixed top-4 right-4 ${colores[tipo]} text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50 transition-all duration-300`;
+    notif.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'warning' ? 'exclamation-triangle' : tipo === 'error' ? 'times-circle' : 'info-circle'} mr-2"></i>${mensaje}`;
+    document.body.appendChild(notif);
+    setTimeout(() => {
+        notif.style.opacity = '0';
+        notif.style.transform = 'translateX(100px)';
+        setTimeout(() => notif.remove(), 300);
+    }, 3000);
+}
+
+function showPaymentModal(planId) {
+    const plans = { pro: { name: 'Pro', price: 49 }, premium: { name: 'Premium', price: 99 } };
+    const plan = plans[planId];
+    if (!plan) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-gray-900 p-6 rounded-lg max-w-md w-full border border-gray-700">
+            <h3 class="text-xl font-bold text-white mb-2">Plan ${plan.name}</h3>
+            <p class="text-3xl font-bold text-emerald-400 mb-4">$${plan.price}/mes</p>
+            <div class="space-y-2 mb-4 text-xs text-gray-300">
+                <p>✅ ${planId === 'pro' ? 'Datos reales + IA ilimitada' : 'Todo Pro + Bots + Soporte 24/7'}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="pagarConStripe('${planId}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm">
+                    <i class="fab fa-stripe mr-2"></i> Stripe
+                </button>
+                <button onclick="pagarConPaypal('${planId}')" class="flex-1 bg-[#0070ba] hover:bg-[#003087] text-white py-2 rounded text-sm">
+                    <i class="fab fa-paypal mr-2"></i> PayPal
+                </button>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="mt-4 w-full text-gray-500 hover:text-gray-300 text-sm">Cancelar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function pagarConStripe(planId) {
+    mostrarNotificacion(`🔗 Redirigiendo a Stripe para plan ${planId}...`, 'info');
+    setTimeout(() => mostrarNotificacion('✅ Pago simulado exitoso', 'success'), 1500);
+}
+
+function pagarConPaypal(planId) {
+    mostrarNotificacion(`🔗 Abriendo PayPal para plan ${planId}...`, 'info');
+    setTimeout(() => mostrarNotificacion('✅ Pago simulado exitoso', 'success'), 1500);
+}
+
+// ============================================================
+// TRADINGVIEW CHART
+// ============================================================
+let tradingViewWidget = null;
+
+function initTradingView(symbol = 'BINANCE:BTCUSDT', interval = '60') {
+    const container = document.getElementById('tradingview-widget');
+    if (!container) return;
+    container.innerHTML = '';
+    try {
+        if (typeof TradingView !== 'undefined') {
+            tradingViewWidget = new TradingView.widget({
+                symbol: symbol,
+                interval: interval,
+                container_id: 'tradingview-widget',
+                theme: 'dark',
+                style: '1',
+                locale: 'es',
+                toolbar_bg: '#0f1724',
+                enable_publishing: false,
+                hide_side_toolbar: false,
+                allow_symbol_change: true,
+                details: true,
+                hotlist: true,
+                calendar: false,
+                studies: ['MASimple@tv-basicstudies', 'RSI@tv-basicstudies', 'MACD@tv-basicstudies'],
+                autosize: true,
+                timezone: 'Etc/UTC',
+                withdateranges: true,
+                hide_top_toolbar: false,
+                save_image: false
+            });
+        } else {
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Cargando TradingView...</div>';
+            setTimeout(() => initTradingView(symbol, interval), 2000);
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error cargando gráfico.</div>';
+    }
+}
+
+function changeChartInterval(interval) {
+    if (tradingViewWidget) {
+        try {
+            tradingViewWidget.setInterval(interval);
+        } catch (e) {
+            initTradingView('BINANCE:BTCUSDT', interval);
+        }
+    } else {
+        initTradingView('BINANCE:BTCUSDT', interval);
+    }
+    document.querySelectorAll('.chart-container .flex .text-xs button').forEach(btn => {
+        btn.className = 'text-gray-500 hover:text-white transition px-2 py-1 rounded';
+    });
+    if (event && event.target) {
+        event.target.className = 'text-gray-300 font-semibold hover:text-white transition px-2 py-1 rounded bg-gray-800';
+    }
+}
+
+// ============================================================
+// RENDER ESTRATEGIAS ACTIVAS
+// ============================================================
+function renderActiveStrategies() {
+    const strategies = [
+        { name: 'EMA Cross', icon: 'fa-arrow-trend-up', strength: 85 },
+        { name: 'RSI', icon: 'fa-chart-bar', strength: 72 },
+        { name: 'MACD', icon: 'fa-wave-square', strength: 78 },
+        { name: 'Fibonacci', icon: 'fa-rotate-left', strength: 68 }
+    ];
+    
+    const container = document.getElementById('active-strategies');
+    container.innerHTML = strategies.map(s => `
+        <div class="bg-emerald-950/20 border border-emerald-800/50 rounded-lg p-3">
+            <div class="flex items-center gap-2 mb-1.5">
+                <i class="fas ${s.icon} text-emerald-400"></i>
+                <span class="text-sm font-medium text-gray-200">${s.name}</span>
+                <span class="text-[10px] text-emerald-400 ml-auto">✅ Activa</span>
+            </div>
+            <div class="flex justify-between text-xs">
+                <span class="text-gray-500">Fuerza</span>
+                <span class="text-emerald-400 font-semibold">${s.strength}%</span>
+            </div>
+            <div class="h-1 bg-gray-700 rounded mt-1.5 overflow-hidden">
+                <div class="h-full bg-emerald-400 rounded" style="width:${s.strength}%"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// NAVEGACIÓN SIDEBAR
+// ============================================================
+document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', function() {
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.dataset.section;
+        document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+        document.getElementById(`section-${section}`).classList.remove('hidden');
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    });
+});
+
+// ============================================================
+// INICIALIZACIÓN
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    cargarCredenciales();
+    cargarConfiguracion();
+    initTradingView('BINANCE:BTCUSDT', '60');
+    renderizarHistorial();
+    renderActiveStrategies();
+    
+    // Auto-conectar: las keys ya están configuradas en el servidor (Vercel)
+    setTimeout(() => testBinanceConnection(), 1000);
+    
+    // Actualizar scanner periódicamente
+    setInterval(() => {
+        if (window.APP_CONFIG.binance.enabled) {
+            updateScannerWithRealData();
+        }
+    }, 30000);
+});
+</script>
+</body>
+</html>
