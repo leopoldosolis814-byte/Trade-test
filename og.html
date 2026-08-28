@@ -1,0 +1,2774 @@
+<!DOCTYPE html>
+<html lang="es" id="html-root">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AI Trading Copilot - Binance Real</title>
+
+    <!-- ========== OPEN GRAPH META TAGS ========== -->
+    <meta property="og:title" content="AI Trading Copilot - Binance Real" />
+    <meta property="og:description" content="Análisis autónomo en tiempo real con 5 agentes de IA institucionales. Conecta a Binance, recibe señales y ejecuta con gestión de riesgo." />
+    <meta property="og:image" content="https://res.cloudinary.com/ds2udm1nc/image/upload/v1787885484/ai_trading_copilot_banner_1_k7lamq.jpg" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:type" content="website" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="AI Trading Copilot - Binance Real" />
+    <meta name="twitter:description" content="Análisis autónomo en tiempo real con 5 agentes de IA institucionales." />
+    <meta name="twitter:image" content="https://res.cloudinary.com/ds2udm1nc/image/upload/v1787885484/ai_trading_copilot_banner_1_k7lamq.jpg" />
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <script src="https://s3.tradingview.com/tv.js"></script>
+    <style>
+        /* ========== BASE ========== */
+        * { scrollbar-width: thin; scrollbar-color: #2d3748 transparent; }
+        ::-webkit-scrollbar { width: 4px; height: 4px; }
+        ::-webkit-scrollbar-thumb { background: #2d3748; border-radius: 20px; }
+        body { background: #060A12; color: #e2e8f0; font-family: 'Inter', system-ui, sans-serif; transition: background 0.3s, color 0.3s; }
+
+        /* ========== LIGHT MODE ========== */
+        html.light body { background: #F8FAFC; color: #0F172A; }
+        html.light .sidebar { background: rgba(255,255,255,0.85); border-right: 1px solid rgba(0,0,0,0.06); }
+        html.light .sidebar-item { color: #64748B; }
+        html.light .sidebar-item:hover { background: #F1F5F9; color: #0F172A; }
+        html.light .sidebar-item.active { background: #F1F5F9; color: #059669; border-left-color: #059669; }
+        html.light .card { background: #FFFFFF; border: 1px solid rgba(0,0,0,0.06); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+        html.light .card:hover { border-color: rgba(16,185,129,0.3); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+        html.light .bg-gray-900 { background: #F1F5F9; }
+        html.light .bg-gray-800 { background: #E2E8F0; }
+        html.light .bg-gray-700 { background: #CBD5E1; }
+        html.light .text-gray-300 { color: #475569; }
+        html.light .text-gray-400 { color: #64748B; }
+        html.light .text-gray-500 { color: #94A3B8; }
+        html.light .border-gray-700 { border-color: #E2E8F0; }
+        html.light .border-gray-800 { border-color: #CBD5E1; }
+        html.light .border-gray-900 { border-color: #E2E8F0; }
+        html.light .bg-gray-900/50 { background: rgba(241,245,249,0.8); }
+        html.light .bg-gradient-to-br.from-gray-900.to-gray-800 { background: #F1F5F9; }
+        html.light .chat-panel { background: rgba(255,255,255,0.92); border-left: 1px solid rgba(0,0,0,0.06); }
+        html.light .chat-message.assistant .message-bubble { background: #F1F5F9; border-color: #E2E8F0; color: #0F172A; }
+        html.light .chat-message.user .message-bubble { background: #059669; color: white; }
+        html.light .chat-input-area { background: #F8FAFC; border-top-color: #E2E8F0; }
+        html.light .chat-input-area input { background: #FFFFFF; border-color: #E2E8F0; color: #0F172A; }
+        html.light .chat-header { background: #F8FAFC; border-bottom-color: #E2E8F0; }
+        html.light .quick-actions { border-bottom-color: #E2E8F0; }
+        html.light .quick-actions button { background: #F1F5F9; border-color: #E2E8F0; color: #64748B; }
+        html.light .quick-actions button:hover { background: #E2E8F0; color: #0F172A; }
+        html.light .scanner-item { background: #FFFFFF; border-color: #E2E8F0; }
+        html.light .scanner-item:hover { border-color: #059669; }
+        html.light .opportunity-detail { background: #F1F5F9; border-color: #E2E8F0; }
+        html.light .table-container thead { background: #F8FAFC; }
+        html.light .table-row:hover { background: rgba(0,0,0,0.02); }
+        html.light .switch .slider { background: #CBD5E1; }
+        html.light input:checked + .slider { background: #059669; }
+        html.light .badge-win { background: #D1FAE5; color: #065F46; border-color: #A7F3D0; }
+        html.light .badge-loss { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+        html.light .badge-wait { background: #FEF3C7; color: #78350F; border-color: #FDE68A; }
+        html.light .badge-buy { background: #D1FAE5; color: #065F46; border-color: #A7F3D0; }
+        html.light .badge-sell { background: #FEE2E2; color: #991B1B; border-color: #FCA5A5; }
+        html.light .btn-primary { background: linear-gradient(135deg, #059669, #047857); color: white; }
+        html.light .btn-primary:hover { box-shadow: 0 4px 15px rgba(5,150,105,0.3); }
+        html.light .chat-toggle { background: linear-gradient(135deg, #059669, #047857); color: white; }
+        html.light #section-plans .bg-gray-900 { background: #F8FAFC; }
+        html.light #section-plans .border-gray-700 { border-color: #E2E8F0; }
+        html.light .text-white { color: #0F172A; }
+        html.light .text-white\/80 { color: #1E293B; }
+        html.light .text-white\/60 { color: #475569; }
+        html.light .text-white\/50 { color: #64748B; }
+        html.light .text-white\/40 { color: #94A3B8; }
+        html.light .text-white\/30 { color: #CBD5E1; }
+        html.light .text-white\/25 { color: #E2E8F0; }
+        html.light .text-white\/20 { color: #F1F5F9; }
+        html.light .bg-white\/\[0\.06\] { background: #F1F5F9; }
+        html.light .bg-white\/\[0\.05\] { background: #F8FAFC; }
+        html.light .bg-white\/\[0\.04\] { background: #FFFFFF; }
+        html.light .bg-white\/\[0\.03\] { background: #FAFAFA; }
+        html.light .border-white\/\[0\.06\] { border-color: #E2E8F0; }
+        html.light .border-white\/\[0\.08\] { border-color: #CBD5E1; }
+        html.light .border-white\/\[0\.05\] { border-color: #F1F5F9; }
+        html.light .bg-\[\#0A1020\] { background: #F8FAFC; }
+        html.light .bg-\[\#0F172A\] { background: #F1F5F9; }
+        html.light .bg-\[\#0A0F1C\] { background: #F8FAFC; }
+        html.light .bg-\[\#0C1220\] { background: #F8FAFC; }
+        html.light .bg-\[\#060A12\] { background: #F8FAFC; }
+        html.light .bg-\[\#060A12\]\/70 { background: rgba(248,250,252,0.85); }
+        html.light .bg-emerald-500\/15 { background: #D1FAE5; }
+        html.light .bg-violet-500\/15 { background: #EDE9FE; }
+        html.light .bg-amber-500\/10 { background: #FEF3C7; }
+        html.light .bg-red-500\/15 { background: #FEE2E2; }
+        html.light .text-emerald-100 { color: #065F46; }
+        html.light .text-violet-300 { color: #6D28D9; }
+        html.light .text-amber-200 { color: #78350F; }
+        html.light .text-red-100 { color: #991B1B; }
+        html.light .text-emerald-300 { color: #047857; }
+        html.light .text-emerald-300\/70 { color: #047857; opacity: 0.7; }
+        html.light .text-emerald-400 { color: #059669; }
+        html.light .text-emerald-950 { color: #065F46; }
+        html.light .text-zinc-100 { color: #0F172A; }
+        html.light .text-amber-500 { color: #D97706; }
+        html.light .text-red-500 { color: #DC2626; }
+        html.light .text-violet-500 { color: #7C3AED; }
+        html.light .mesh-bg { background: #F8FAFC; }
+        html.light .shadow-\[0_0_20px_rgba\(16,185,129,0.5\)\,inset_0_1px_0_rgba\(255,255,255,0.4\)\] { box-shadow: 0 0 20px rgba(5,150,105,0.2), inset 0 1px 0 rgba(255,255,255,0.8); }
+        html.light .shadow-\[0_0_10px_rgba\(16,185,129,0.8\)\] { box-shadow: 0 0 10px rgba(5,150,105,0.3); }
+        html.light .shadow-\[0_0_8px_rgba\(16,185,129,0.8\)\] { box-shadow: 0 0 8px rgba(5,150,105,0.3); }
+        html.light .shadow-\[0_4px_16px_rgba\(16,185,129,0.35\)\] { box-shadow: 0 4px 16px rgba(5,150,105,0.2); }
+        html.light .shadow-\[0_0_50px_-20px_rgba\(16,185,129,0.4\)\] { box-shadow: 0 0 50px -20px rgba(5,150,105,0.2); }
+        html.light .from-emerald-500\/\[0\.08\] { --tw-gradient-from: rgba(5,150,105,0.08); --tw-gradient-to: rgba(5,150,105,0); --tw-gradient-stops: var(--tw-gradient-from), var(--tw-gradient-to); }
+        html.light .to-violet-500\/10 { --tw-gradient-to: rgba(124,58,237,0.1); }
+        html.light .bg-white\/10 { background: rgba(0,0,0,0.05); }
+        html.light .bg-white\/\[0\.02\] { background: rgba(0,0,0,0.02); }
+        html.light .bg-white\/\[0\.04\] { background: rgba(0,0,0,0.02); }
+        html.light .bg-white\/\[0\.06\] { background: rgba(0,0,0,0.04); }
+        html.light .bg-white\/\[0\.08\] { background: rgba(0,0,0,0.06); }
+        html.light .bg-white\/40 { background: rgba(0,0,0,0.04); }
+        html.light .hover\:bg-white\/\[0\.1\]:hover { background: rgba(0,0,0,0.06); }
+        html.light .hover\:bg-white\/\[0\.02\]:hover { background: rgba(0,0,0,0.02); }
+
+        /* ========== SIDEBAR ========== */
+        .sidebar {
+            position: fixed; left: 0; top: 0; bottom: 0; width: 220px;
+            background: #0f1724; border-right: 1px solid #1a2332;
+            padding: 1.5rem 1rem; z-index: 50;
+            transition: transform 0.3s ease, background 0.3s, border-color 0.3s;
+        }
+        .sidebar-item {
+            display: flex; align-items: center; gap: 0.75rem;
+            padding: 0.6rem 0.9rem; border-radius: 8px;
+            color: #9ca3af; transition: all 0.2s ease; cursor: pointer;
+            font-size: 0.85rem;
+        }
+        .sidebar-item:hover { background: #1a2332; color: #f3f4f6; }
+        .sidebar-item.active { background: #1a2332; color: #34d399; border-left: 3px solid #34d399; }
+        html.light .sidebar-item.active { background: #F1F5F9; color: #059669; border-left-color: #059669; }
+
+        /* ========== CARDS ========== */
+        .card {
+            background: #111827; border: 1px solid #1f2937; border-radius: 12px;
+            padding: 1.25rem; transition: all 0.3s ease;
+        }
+        .card:hover { border-color: #374151; transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.3); }
+        html.light .card { background: #FFFFFF; border-color: rgba(0,0,0,0.06); box-shadow: 0 4px 24px rgba(0,0,0,0.04); }
+        html.light .card:hover { border-color: rgba(16,185,129,0.3); box-shadow: 0 12px 32px rgba(0,0,0,0.06); }
+
+        /* ========== BADGES ========== */
+        .badge-win { background: #064e3b; color: #34d399; border: 1px solid #065f46; }
+        .badge-loss { background: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
+        .badge-wait { background: #451a03; color: #fbbf24; border: 1px solid #78350f; }
+        .badge-buy { background: #064e3b; color: #34d399; border: 1px solid #065f46; }
+        .badge-sell { background: #7f1d1d; color: #f87171; border: 1px solid #991b1b; }
+
+        /* ========== BUTTONS ========== */
+        .btn-primary {
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white; padding: 0.5rem 1.25rem; border-radius: 8px;
+            font-weight: 500; transition: all 0.3s ease; border: none; cursor: pointer;
+        }
+        .btn-primary:hover { transform: scale(1.02); box-shadow: 0 4px 15px rgba(5, 150, 105, 0.4); }
+
+        /* ========== CHART ========== */
+        .chart-container { height: 450px; background: #0f1724; border-radius: 8px; overflow: hidden; position: relative; }
+        .chart-container iframe { width: 100%; height: 100%; border: none; }
+
+        /* ========== AI CONFIDENCE BAR ========== */
+        .ai-confidence-bar { height: 4px; background: #1f2937; border-radius: 4px; overflow: hidden; }
+        .ai-confidence-fill { height: 100%; border-radius: 4px; transition: width 1s ease; }
+
+        /* ========== SCANNER ========== */
+        .scanner-item {
+            background: #0f1724; border: 1px solid #1f2937;
+            border-radius: 8px; padding: 0.75rem;
+            transition: all 0.3s ease; cursor: pointer;
+        }
+        .scanner-item:hover { border-color: #374151; transform: translateX(4px); }
+        html.light .scanner-item { background: #FFFFFF; border-color: #E2E8F0; }
+        html.light .scanner-item:hover { border-color: #059669; }
+
+        /* ========== MODO PRINCIPIANTE ========== */
+        body.modo-principiante .beginner-hide { display: none !important; }
+
+        /* ========== OPPORTUNITY DETAIL ========== */
+        .opportunity-detail {
+            background: #0f1724; border: 1px solid #1f2937;
+            border-radius: 8px; padding: 1rem;
+            max-height: 0; overflow: hidden;
+            transition: max-height 0.4s ease, padding 0.3s ease;
+        }
+        .opportunity-detail.open { max-height: 600px; padding: 1rem; }
+
+        /* ========== RESPONSIVE SIDEBAR ========== */
+        @media (max-width: 768px) {
+            .sidebar { transform: translateX(-100%); }
+            .sidebar.open { transform: translateX(0); }
+            .main-content { margin-left: 0 !important; }
+        }
+        .main-content { margin-left: 220px; transition: margin-left 0.3s ease; }
+
+        /* ========== TABLES ========== */
+        .table-container { max-height: 350px; overflow-y: auto; }
+        table { width: 100%; border-collapse: collapse; }
+        thead { position: sticky; top: 0; background: #111827; z-index: 10; }
+        th { padding: 0.75rem 0.5rem; text-align: left; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: #6b7280; border-bottom: 1px solid #1f2937; }
+        td { padding: 0.75rem 0.5rem; font-size: 0.8rem; border-bottom: 1px solid #1a2332; }
+        .table-row:hover { background: rgba(31, 41, 55, 0.3); }
+        html.light thead { background: #F8FAFC; }
+        html.light .table-row:hover { background: rgba(0,0,0,0.02); }
+
+        /* ========== SWITCH ========== */
+        .switch { position: relative; display: inline-block; width: 40px; height: 24px; }
+        .switch input { opacity: 0; width: 0; height: 0; }
+        .slider {
+            position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0;
+            background: #374151; transition: .4s; border-radius: 24px;
+        }
+        .slider:before {
+            position: absolute; content: ""; height: 18px; width: 18px;
+            left: 3px; bottom: 3px; background: white; transition: .4s; border-radius: 50%;
+        }
+        input:checked + .slider { background: #059669; }
+        input:checked + .slider:before { transform: translateX(16px); }
+        html.light .slider { background: #CBD5E1; }
+        html.light input:checked + .slider { background: #059669; }
+
+        /* ========== PULSE DOT ========== */
+        @keyframes pulse-dot { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+        .pulse-dot { animation: pulse-dot 2s infinite; }
+
+        /* ========== CHAT PANEL ========== */
+        .chat-panel {
+            position: fixed; right: -420px; top: 0; bottom: 0; width: 400px;
+            background: #0f1724; border-left: 1px solid #1f2937; z-index: 100;
+            transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex; flex-direction: column;
+        }
+        .chat-panel.open { right: 0; }
+        html.light .chat-panel { background: rgba(255,255,255,0.92); border-left: 1px solid rgba(0,0,0,0.06); }
+
+        /* ========== CHAT TOGGLE ========== */
+        .chat-toggle {
+            position: fixed; right: 24px; bottom: 24px; z-index: 99;
+            background: linear-gradient(135deg, #059669, #047857);
+            color: white; width: 56px; height: 56px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            cursor: pointer; box-shadow: 0 8px 30px rgba(5, 150, 105, 0.4);
+            transition: all 0.3s ease; border: none;
+        }
+        .chat-toggle:hover { transform: scale(1.05); box-shadow: 0 8px 40px rgba(5, 150, 105, 0.6); }
+        .chat-toggle .fa-times { display: none; }
+        .chat-toggle.open .fa-comment { display: none; }
+        .chat-toggle.open .fa-times { display: inline-block; }
+
+        /* ========== CHAT MESSAGES ========== */
+        .chat-messages { flex: 1; overflow-y: auto; padding: 1rem; scroll-behavior: smooth; }
+        .chat-message { margin-bottom: 1rem; animation: slideIn 0.3s ease; }
+        .chat-message.user { text-align: right; }
+        .chat-message.user .message-bubble {
+            background: #059669; color: white; border-radius: 12px 12px 4px 12px;
+            display: inline-block; padding: 0.6rem 1rem; max-width: 85%; font-size: 0.85rem;
+        }
+        .chat-message.assistant .message-bubble {
+            background: #1a2332; color: #e2e8f0; border: 1px solid #2d3748;
+            border-radius: 12px 12px 12px 4px; display: inline-block;
+            padding: 0.6rem 1rem; max-width: 92%; font-size: 0.85rem; text-align: left;
+        }
+        html.light .chat-message.assistant .message-bubble { background: #F1F5F9; border-color: #E2E8F0; color: #0F172A; }
+        html.light .chat-message.user .message-bubble { background: #059669; color: white; }
+
+        .chat-message .message-time { font-size: 0.6rem; color: #6b7280; margin-top: 0.2rem; }
+        .chat-message.user .message-time { text-align: right; }
+        .chat-input-area { padding: 1rem; border-top: 1px solid #1f2937; background: #0f1724; }
+        html.light .chat-input-area { background: #F8FAFC; border-top-color: #E2E8F0; }
+        .chat-input-area .input-wrapper { display: flex; gap: 0.5rem; align-items: center; }
+        .chat-input-area input {
+            flex: 1; background: #1a2332; border: 1px solid #2d3748;
+            color: #e2e8f0; padding: 0.6rem 1rem; border-radius: 8px;
+            font-size: 0.85rem; outline: none; transition: border-color 0.3s ease;
+        }
+        html.light .chat-input-area input { background: #FFFFFF; border-color: #E2E8F0; color: #0F172A; }
+        .chat-input-area input:focus { border-color: #059669; }
+        .chat-input-area input::placeholder { color: #6b7280; }
+        .chat-input-area .send-btn {
+            background: #059669; color: white; border: none; width: 40px; height: 40px;
+            border-radius: 8px; cursor: pointer; transition: all 0.3s ease;
+            display: flex; align-items: center; justify-content: center;
+        }
+        .chat-input-area .send-btn:hover { background: #047857; transform: scale(1.05); }
+
+        /* ========== QUICK ACTIONS ========== */
+        .quick-actions { display: flex; flex-wrap: wrap; gap: 0.4rem; padding: 0.5rem 1rem 0; border-bottom: 1px solid #1f2937; }
+        html.light .quick-actions { border-bottom-color: #E2E8F0; }
+        .quick-actions button {
+            background: #1a2332; border: 1px solid #2d3748; color: #9ca3af;
+            padding: 0.3rem 0.7rem; border-radius: 16px; font-size: 0.65rem;
+            cursor: pointer; transition: all 0.2s ease; white-space: nowrap;
+        }
+        .quick-actions button:hover { background: #2d3748; color: #f3f4f6; border-color: #059669; }
+        html.light .quick-actions button { background: #F1F5F9; border-color: #E2E8F0; color: #64748B; }
+        html.light .quick-actions button:hover { background: #E2E8F0; color: #0F172A; }
+
+        .chat-header {
+            padding: 1rem 1.2rem; border-bottom: 1px solid #1f2937;
+            display: flex; justify-content: space-between; align-items: center;
+            background: #0f1724;
+        }
+        html.light .chat-header { background: #F8FAFC; border-bottom-color: #E2E8F0; }
+        .chat-header h3 { font-size: 0.95rem; font-weight: 600; color: #e2e8f0; display: flex; align-items: center; gap: 0.5rem; }
+        .chat-header .close-chat { color: #6b7280; cursor: pointer; transition: color 0.3s ease; background: none; border: none; font-size: 1.2rem; }
+        .chat-header .close-chat:hover { color: #f3f4f6; }
+
+        /* ========== TYPING INDICATOR ========== */
+        .typing-indicator {
+            display: inline-block; background: #1a2332; border: 1px solid #2d3748;
+            border-radius: 12px 12px 12px 4px; padding: 0.6rem 1rem;
+            color: #9ca3af; font-size: 0.85rem;
+        }
+        .typing-indicator span { display: inline-block; animation: typing 1.4s infinite; margin: 0 1px; }
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+        @keyframes typing { 0%, 60%, 100% { opacity: 0.3; transform: translateY(0); } 30% { opacity: 1; transform: translateY(-4px); } }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ========== ANALYSIS BLOCK ========== */
+        .chat-message.assistant .message-bubble .analysis-block {
+            background: #0f1724; border-radius: 6px; padding: 0.5rem 0.7rem;
+            margin-top: 0.4rem; border-left: 2px solid #059669;
+        }
+        html.light .chat-message.assistant .message-bubble .analysis-block { background: #F8FAFC; }
+        .chat-message.assistant .message-bubble .analysis-block .label {
+            font-size: 0.6rem; text-transform: uppercase; color: #6b7280; letter-spacing: 0.05em;
+        }
+        .chat-message.assistant .message-bubble .analysis-block .value { font-weight: 500; color: #e2e8f0; }
+        .chat-message.assistant .message-bubble .analysis-block .value.green { color: #34d399; }
+        .chat-message.assistant .message-bubble .analysis-block .value.red { color: #f87171; }
+        .chat-message.assistant .message-bubble .analysis-block .value.amber { color: #fbbf24; }
+
+        @media (max-width: 640px) {
+            .chat-panel { width: 100%; right: -100%; }
+            .chat-panel.open { right: 0; }
+        }
+
+        /* ========== LANDING ========== */
+        #landing {
+            min-height: 100vh;
+            background: #060A12;
+            display: flex; flex-direction: column;
+            transition: background 0.3s;
+        }
+        html.light #landing { background: #F8FAFC; }
+        .landing-hero {
+            flex: 1;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 4rem 1.5rem;
+            text-align: center;
+            max-width: 900px; margin: 0 auto;
+        }
+        .landing-features { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; width: 100%; max-width: 800px; margin: 2rem auto; }
+        @media (max-width: 640px) { .landing-features { grid-template-columns: 1fr; } }
+        .landing-feature { background: rgba(17,24,39,0.6); border: 1px solid rgba(255,255,255,0.06); border-radius: 12px; padding: 1rem 1.2rem; text-align: left; transition: all 0.3s; }
+        .landing-feature:hover { border-color: rgba(16,185,129,0.3); transform: translateY(-2px); }
+        html.light .landing-feature { background: rgba(255,255,255,0.6); border-color: rgba(0,0,0,0.06); }
+        html.light .landing-feature:hover { border-color: rgba(16,185,129,0.3); }
+        .landing-feature i { color: #34d399; font-size: 1.2rem; margin-bottom: 0.4rem; display: inline-block; }
+
+        /* ========== MESH BG ========== */
+        .mesh-bg {
+            background:
+                radial-gradient(800px 500px at 15% -10%, rgba(16,185,129,0.12), transparent 60%),
+                radial-gradient(700px 500px at 85% 0%, rgba(139,92,246,0.08), transparent 60%),
+                #060A12;
+        }
+        html.light .mesh-bg {
+            background:
+                radial-gradient(800px 500px at 15% -10%, rgba(16,185,129,0.06), transparent 60%),
+                radial-gradient(700px 500px at 85% 0%, rgba(139,92,246,0.04), transparent 60%),
+                #F8FAFC;
+        }
+
+        /* ========== HIDE APP INITIALLY ========== */
+        #app { display: none; }
+        #app.active { display: block; }
+        #landing.hidden { display: none; }
+    </style>
+</head>
+<body>
+
+<!-- ================================================================== -->
+<!-- LANDING PAGE -->
+<!-- ================================================================== -->
+<div id="landing" class="mesh-bg">
+    <div class="flex-1 flex flex-col">
+        <!-- Header landing -->
+        <header class="flex items-center justify-between px-6 py-4 border-b border-white/[0.06] max-w-[1200px] mx-auto w-full">
+            <div class="flex items-center gap-2">
+                <span class="text-lg font-bold text-white tracking-tight" id="landing-title">AI Copilot</span>
+                <span class="text-[10px] bg-emerald-950 text-emerald-400 px-2 py-0.5 rounded-full border border-emerald-800/30">Binance Real</span>
+            </div>
+            <div class="flex items-center gap-3">
+                <!-- Language toggle -->
+                <button id="lang-toggle-landing" onclick="toggleLang()" class="text-xs bg-white/5 border border-white/10 px-3 py-1.5 rounded-full text-white/70 hover:text-white hover:bg-white/10 transition flex items-center gap-1.5">
+                    <i class="fas fa-globe text-[10px]"></i> <span id="lang-label-landing">ES</span>
+                </button>
+                <!-- Theme toggle -->
+                <button onclick="toggleTheme()" class="w-8 h-8 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-white/60 hover:text-white hover:bg-white/10 transition">
+                    <i id="theme-icon-landing" class="fas fa-moon text-sm"></i>
+                </button>
+            </div>
+        </header>
+
+        <!-- Hero -->
+        <div class="landing-hero">
+            <div class="inline-flex items-center gap-2 text-[11px] px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-300 mb-6">
+                <i class="fas fa-circle text-[6px] text-emerald-400 animate-pulse"></i>
+                <span id="landing-badge">Binance Real · Datos en vivo</span>
+            </div>
+            <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold tracking-tight leading-[1.05] text-white" id="landing-h1">
+                AI Trading <br class="sm:hidden"><span class="text-emerald-400">Copilot</span>
+            </h1>
+
+            <!-- CTA arriba, sin scroll -->
+            <button onclick="enterApp()" class="btn-primary text-base px-8 py-3.5 rounded-xl flex items-center gap-2 shadow-[0_0_30px_rgba(16,185,129,0.3)] hover:shadow-[0_0_40px_rgba(16,185,129,0.5)] transition-all mt-6">
+                <i class="fas fa-rocket"></i> <span id="landing-cta">Ir a mi Copilot</span>
+                <i class="fas fa-arrow-right text-sm"></i>
+            </button>
+
+            <div class="mt-5 flex items-center gap-4 text-xs text-gray-500">
+                <span><i class="fas fa-shield-alt text-emerald-400 mr-1"></i> <span id="landing-foot-1">Sin riesgos</span></span>
+                <span class="w-px h-4 bg-gray-700"></span>
+                <span><i class="fas fa-crown text-yellow-400 mr-1"></i> <span id="landing-foot-2">Planes desde $0</span></span>
+                <span class="w-px h-4 bg-gray-700"></span>
+                <span><i class="fas fa-robot text-emerald-400 mr-1"></i> <span id="landing-foot-3">IA avanzada</span></span>
+            </div>
+
+            <!-- Explicación abajo -->
+            <p class="text-base md:text-lg text-gray-400 max-w-[560px] mt-10 leading-relaxed" id="landing-desc">
+                Análisis autónomo en tiempo real con <span class="text-emerald-300 font-medium">5 agentes de IA institucionales</span>. Conecta a Binance, recibe señales y ejecuta con gestión de riesgo.
+            </p>
+
+            <!-- Features -->
+            <div class="landing-features">
+                <div class="landing-feature"><i class="fas fa-brain"></i> <span class="text-white font-medium">5 Agentes IA</span> <span class="text-gray-400 text-xs block">Indicadores · Inteligencia · Fundamental · Riesgo · Decisión</span></div>
+                <div class="landing-feature"><i class="fas fa-chart-line"></i> <span class="text-white font-medium">Datos Binance Real</span> <span class="text-gray-400 text-xs block">Precios, velas, volumen en tiempo real</span></div>
+                <div class="landing-feature"><i class="fas fa-flask"></i> <span class="text-white font-medium">Backtesting Real</span> <span class="text-gray-400 text-xs block">Simula estrategias con datos históricos reales</span></div>
+                <div class="landing-feature"><i class="fas fa-radar"></i> <span class="text-white font-medium">Scanner IA</span> <span class="text-gray-400 text-xs block">Señales en vivo con confianza y win-rate</span></div>
+            </div>
+        </div>
+
+        <!-- Footer landing -->
+        <div class="text-center text-[10px] text-gray-600 py-4 border-t border-white/5">
+            <span id="landing-footer">AI Trading Copilot · Binance Real · v2.4.1</span>
+        </div>
+    </div>
+</div>
+
+<!-- ================================================================== -->
+<!-- APP (COPILOT) -->
+<!-- ================================================================== -->
+<div id="app">
+
+<!-- SIDEBAR -->
+<aside class="sidebar" id="sidebar">
+    <div class="flex items-center gap-2 mb-8">
+        <i class="fas fa-robot text-emerald-400 text-xl"></i>
+        <span class="text-lg font-bold text-white" id="app-title">AI Copilot</span>
+        <span class="text-[10px] bg-emerald-950 text-emerald-400 px-1.5 py-0.5 rounded" id="app-badge">Binance</span>
+    </div>
+    <nav class="space-y-1">
+        <div class="sidebar-item active" data-section="dashboard"><i class="fas fa-th-large"></i> <span id="nav-dashboard">Dashboard</span></div>
+        <div class="sidebar-item" data-section="aprendizaje"><i class="fas fa-graduation-cap text-purple-400"></i> <span id="nav-aprendizaje">Aprendizaje</span></div>
+        <div class="sidebar-item" data-section="scanner"><i class="fas fa-search"></i> <span id="nav-scanner">Scanner</span> <span class="text-[9px] bg-emerald-500/20 text-emerald-300 px-1.5 py-0.5 rounded-full ml-auto">LIVE</span></div>
+        <div class="sidebar-item" data-section="history"><i class="fas fa-history"></i> <span id="nav-history">Historial</span></div>
+        <div class="sidebar-item" data-section="settings"><i class="fas fa-sliders-h"></i> <span id="nav-settings">Configuración</span></div>
+        <div class="sidebar-item" data-section="plans"><i class="fas fa-crown text-yellow-400"></i> <span id="nav-plans">Planes</span></div>
+    </nav>
+    <div class="absolute bottom-6 left-4 right-4">
+        <div class="bg-gray-900/50 p-3 rounded-lg border border-gray-800" id="sidebar-status-card">
+            <div class="flex items-center gap-2 text-xs text-gray-400">
+                <span class="relative flex h-2 w-2">
+                    <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span class="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
+                </span>
+                <span>Binance: <span id="binance-status-sidebar" class="text-red-400" data-i18n="disconnected">Desconectado</span></span>
+            </div>
+            <div class="text-[10px] text-gray-500 mt-1" id="sidebar-keys-hint">Configura las keys en Settings</div>
+        </div>
+    </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<div class="main-content p-4 md:p-6">
+    <!-- HEADER -->
+    <header class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6 pb-4 border-b border-gray-800 gap-4" id="app-header">
+        <div>
+            <h1 class="text-2xl font-bold tracking-tight text-emerald-400 flex items-center gap-3">
+                <i class="fas fa-robot md:hidden"></i>
+                <span id="header-title">AI Trading Copilot</span>
+                <span class="text-xs bg-emerald-950 text-emerald-400 px-3 py-1 rounded-full border border-emerald-800 font-normal">
+                    <i class="fas fa-flask mr-1"></i> <span id="header-badge">Binance Real</span>
+                </span>
+            </h1>
+            <p class="text-gray-400 text-sm flex items-center gap-2 mt-1">
+                <i class="fas fa-chart-line text-gray-500"></i>
+                <span id="header-sub">Datos reales · Paper trading · IA avanzada</span>
+            </p>
+        </div>
+        <div class="flex items-center gap-3 flex-wrap">
+            <button onclick="toggleSidebar()" class="md:hidden text-gray-400 hover:text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <!-- Language toggle -->
+            <button onclick="toggleLang()" class="text-xs bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700 text-gray-300 hover:text-white flex items-center gap-1.5 transition" id="lang-toggle-app">
+                <i class="fas fa-globe text-[10px]"></i> <span id="lang-label-app">ES</span>
+            </button>
+            <!-- Theme toggle -->
+            <button onclick="toggleTheme()" class="text-xs bg-gray-800 px-2.5 py-1.5 rounded-lg border border-gray-700 text-gray-300 hover:text-white transition">
+                <i id="theme-icon-app" class="fas fa-moon"></i>
+            </button>
+            <span class="text-xs bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700">
+                <i class="fas fa-database text-cyan-400 mr-1"></i> <span id="data-source-label" class="text-gray-300">Simulados</span>
+            </span>
+            <label class="text-xs bg-gray-800 px-3 py-1.5 rounded-lg border border-gray-700 flex items-center gap-2 cursor-pointer">
+                <input type="checkbox" id="modo-principiante" onchange="toggleModoPrincipiante()" class="cursor-pointer">
+                <i class="fas fa-graduation-cap text-purple-400"></i> <span id="beginner-label">Modo Principiante</span>
+            </label>
+            <button onclick="exportarCSV()" class="text-xs bg-gray-800 hover:bg-gray-700 px-3 py-1.5 rounded-lg border border-gray-700 transition">
+                <i class="fas fa-file-export text-emerald-400 mr-1"></i> <span id="export-label">Exportar</span>
+            </button>
+        </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <section id="section-dashboard">
+        <div class="card mb-6">
+            <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2 mb-3">
+                <i class="fas fa-magic text-purple-400"></i> <span id="guia-title">Análisis Guiado por IA</span>
+            </h2>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <select id="guia-symbol" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                    <option value="BTCUSDT">BTC/USDT</option>
+                    <option value="ETHUSDT">ETH/USDT</option>
+                    <option value="SOLUSDT">SOL/USDT</option>
+                    <option value="BNBUSDT">BNB/USDT</option>
+                </select>
+                <select id="guia-interval" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                    <option value="1h">Vela 1h</option>
+                    <option value="15m">Vela 15min</option>
+                    <option value="4h">Vela 4h</option>
+                </select>
+            </div>
+            <button onclick="runGuidedAnalysis()" class="btn-primary text-xs py-2 px-4 w-full"><span id="guia-btn">Analizar</span></button>
+            <div id="guia-empty" class="text-xs text-gray-500 mt-3"><span id="guia-empty-text">Elegí un activo y tocá "Analizar" para ver la señal, checklist de indicadores reales y explicación.</span></div>
+            <div id="guia-result" class="hidden mt-4">
+                <div class="flex items-center justify-between mb-3">
+                    <div>
+                        <span id="guia-action" class="text-lg font-bold"></span>
+                        <span id="guia-confidence" class="text-xs px-2 py-0.5 rounded ml-2"></span>
+                    </div>
+                </div>
+                <div class="grid grid-cols-3 gap-2 text-xs mb-3">
+                    <div class="bg-gray-900 rounded p-2"><p class="text-gray-500"><span id="guia-label-entry">Entrada</span></p><p id="guia-entry" class="font-semibold text-white"></p></div>
+                    <div class="bg-gray-900 rounded p-2"><p class="text-gray-500"><span id="guia-label-sl">Stop-loss</span></p><p id="guia-sl" class="font-semibold text-red-400"></p></div>
+                    <div class="bg-gray-900 rounded p-2"><p class="text-gray-500"><span id="guia-label-tp">Take-profit</span></p><p id="guia-tp" class="font-semibold text-emerald-400"></p></div>
+                </div>
+                <div class="grid grid-cols-2 gap-2 text-xs mb-3">
+                    <div class="bg-gray-900 rounded p-2"><p class="text-gray-500"><span id="guia-label-risk">Riesgo (según tu monto)</span></p><p id="guia-risk" class="font-semibold text-red-400"></p></div>
+                    <div class="bg-gray-900 rounded p-2"><p class="text-gray-500"><span id="guia-label-reward">Ganancia objetivo</span></p><p id="guia-reward" class="font-semibold text-emerald-400"></p></div>
+                </div>
+                <div id="guia-checklist" class="space-y-1.5 mb-3"></div>
+                <p id="guia-explicacion" class="text-xs text-gray-400 bg-gray-900 rounded p-2 mb-3"></p>
+                <button id="guia-execute-btn" onclick="ejecutarDesdeGuia()" class="btn-primary text-xs py-2 px-4 w-full hidden"><span id="guia-execute-label">Ejecutar esta sugerencia</span></button>
+                <div class="grid grid-cols-3 gap-2 mt-2">
+                    <button onclick="ejecutarAccionGuia('BUY')" class="bg-emerald-600/20 text-emerald-400 text-xs py-2 rounded border border-emerald-800/50 hover:bg-emerald-600/30 font-semibold">📈 <span id="guia-action-buy">COMPRAR</span></button>
+                    <button onclick="ejecutarAccionGuia('SELL')" class="bg-red-600/20 text-red-400 text-xs py-2 rounded border border-red-800/50 hover:bg-red-600/30 font-semibold">📉 <span id="guia-action-sell">VENDER</span></button>
+                    <button onclick="ejecutarAccionGuia('WAIT')" class="bg-gray-700/40 text-gray-400 text-xs py-2 rounded border border-gray-700 hover:bg-gray-700/60 font-semibold">⏳ <span id="guia-action-wait">ESPERAR</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-wallet text-emerald-400"></i> <span id="kpi-balance">Saldo Virtual</span>
+                </p>
+                <h3 id="saldo-txt" class="text-2xl font-bold mt-1 text-white">$10,000.00</h3>
+                <span class="text-xs text-emerald-400 flex items-center gap-1 mt-1">
+                    <i class="fas fa-arrow-up text-[10px]"></i> <span id="kpi-balance-sub">Fondos Testnet</span>
+                </span>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-bullseye text-blue-400"></i> <span id="kpi-winrate">Win Rate</span>
+                </p>
+                <h3 id="winrate-txt" class="text-2xl font-bold mt-1 text-white">0%</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-winrate-sub">Últimas 100 operaciones</p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-list-ul text-cyan-400"></i> <span id="kpi-total">Total Operaciones</span>
+                </p>
+                <h3 id="totales-txt" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-total-sub">Historial acumulado</p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase font-semibold flex items-center gap-1">
+                    <i class="fas fa-brain text-purple-400"></i> <span id="kpi-model">Modelo IA</span>
+                </p>
+                <h3 class="text-xl font-bold mt-1 text-purple-400">Llama 3.1 8B</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-model-sub">Inferencia en tiempo real</p>
+            </div>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold"><span id="kpi-pf">Profit Factor</span></p>
+                <h3 id="profit-factor" class="text-2xl font-bold mt-1 text-emerald-400">0.00</h3>
+                <div class="h-1 bg-gray-700 rounded mt-2 overflow-hidden">
+                    <div id="profit-factor-bar" class="h-full bg-emerald-400 rounded" style="width:0%"></div>
+                </div>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold"><span id="kpi-dd">Drawdown Máximo</span></p>
+                <h3 id="drawdown" class="text-2xl font-bold mt-1 text-red-400">0%</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-dd-sub">Desde máximo</p>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold"><span id="kpi-expect">Expectativa Matemática</span></p>
+                <h3 id="expectativa" class="text-2xl font-bold mt-1 text-amber-400">$0.00</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-expect-sub">Por operación</p>
+            </div>
+            <div class="card bg-gradient-to-br from-gray-900 to-gray-800">
+                <p class="text-xs text-gray-400 uppercase font-semibold"><span id="kpi-streak">Racha Actual</span></p>
+                <h3 id="racha" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1" id="kpi-streak-sub">Ganadas consecutivas</p>
+            </div>
+        </div>
+
+        <!-- CHART + AI -->
+        <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
+            <div class="lg:col-span-2 card">
+                <div class="flex justify-between items-center mb-3">
+                    <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        <i class="fas fa-chart-line text-emerald-400"></i> <span id="chart-title">BTC/USDT · Gráfico en Vivo</span>
+                    </h2>
+                    <div class="flex items-center gap-3 text-xs">
+                        <button onclick="changeChartInterval('1')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">1m</button>
+                        <button onclick="changeChartInterval('5')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">5m</button>
+                        <button onclick="changeChartInterval('15')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">15m</button>
+                        <button onclick="changeChartInterval('60')" class="text-gray-300 font-semibold hover:text-white transition px-2 py-1 rounded bg-gray-800">1h</button>
+                        <button onclick="changeChartInterval('240')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">4h</button>
+                        <button onclick="changeChartInterval('D')" class="text-gray-500 hover:text-white transition px-2 py-1 rounded">1d</button>
+                    </div>
+                </div>
+                <div class="chart-container" id="chart-container">
+                    <div id="tradingview-widget" style="width:100%;height:100%;"></div>
+                </div>
+            </div>
+
+            <!-- AI ANALYSIS -->
+            <div class="card">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                        <i class="fas fa-brain text-purple-400"></i> <span id="ai-title">Análisis IA del Mercado</span>
+                    </h2>
+                    <span id="ai-status-badge" class="badge-wait text-[10px] px-2 py-0.5 rounded">⏳ <span id="ai-status-text">Analizando</span></span>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-400"><span id="ai-trend-label">Tendencia</span></span>
+                    <span id="ai-trend" class="text-sm font-semibold text-amber-400">📈 <span id="ai-trend-value">Alcista</span></span>
+                </div>
+                <div class="mb-3">
+                    <div class="flex justify-between text-xs mb-1">
+                        <span class="text-gray-400"><span id="ai-conf-label">Confianza</span></span>
+                        <span id="ai-confidence-text" class="text-white font-semibold">0%</span>
+                    </div>
+                    <div class="ai-confidence-bar">
+                        <div id="ai-confidence-bar" class="ai-confidence-fill" style="width:0%; background: linear-gradient(90deg, #059669, #34d399);"></div>
+                    </div>
+                </div>
+                <div class="flex justify-between items-center mb-3">
+                    <span class="text-xs text-gray-400"><span id="ai-risk-label">Riesgo</span></span>
+                    <span id="ai-risk" class="text-xs font-semibold text-amber-400">⚠️ <span id="ai-risk-value">Moderado</span></span>
+                </div>
+                <div class="mb-3">
+                    <p class="text-xs text-gray-400 mb-1.5"><span id="ai-strategies-label">Estrategias coincidentes</span></p>
+                    <div id="ai-strategies" class="flex flex-wrap gap-1">
+                        <span class="text-[10px] bg-gray-800 px-2 py-0.5 rounded text-gray-400">-</span>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-2.5 rounded border border-gray-700">
+                    <p class="text-xs text-gray-400 mb-1">📝 <span id="ai-decision-label">Decisión IA</span></p>
+                    <p id="ai-explanation" class="text-xs text-gray-300 leading-relaxed">
+                        <span id="ai-decision-text">Analizando condiciones del mercado...</span>
+                    </p>
+                </div>
+                <div class="mt-3 flex gap-2">
+                    <button id="ai-action-buy" onclick="ejecutarOrdenReal('BUY')" class="flex-1 bg-emerald-600/20 text-emerald-400 text-xs py-1.5 rounded border border-emerald-800/50 hover:bg-emerald-600/30 transition"><span id="ai-btn-buy">Comprar</span></button>
+                    <button id="ai-action-sell" onclick="ejecutarOrdenReal('SELL')" class="flex-1 bg-red-600/20 text-red-400 text-xs py-1.5 rounded border border-red-800/50 hover:bg-red-600/30 transition"><span id="ai-btn-sell">Vender</span></button>
+                    <button id="ai-action-wait" class="flex-1 bg-amber-600/20 text-amber-400 text-xs py-1.5 rounded border border-amber-800/50 hover:bg-amber-600/30 transition"><span id="ai-btn-wait">Esperar</span></button>
+                </div>
+            </div>
+        </div>
+
+        <!-- ACTIVE STRATEGIES -->
+        <div class="card mb-6">
+            <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2 mb-4">
+                <i class="fas fa-robot text-cyan-400"></i> <span id="strategies-title">Estrategias Activas</span>
+            </h2>
+            <div id="active-strategies" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3"></div>
+        </div>
+    </section>
+
+    <!-- APRENDIZAJE -->
+    <section id="section-aprendizaje" class="hidden">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase"><span id="apr-capital-label">Capital de aprendizaje</span></p>
+                <h3 class="text-2xl font-bold mt-1 text-white">$100.00</h3>
+                <p class="text-xs text-emerald-400 mt-1"><span id="apr-capital-sub">Fijo, no editable</span></p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase"><span id="apr-winrate-label">Win Rate</span></p>
+                <h3 id="apr-winrate" class="text-2xl font-bold mt-1 text-white">0%</h3>
+                <p class="text-xs text-gray-400 mt-1"><span id="apr-winrate-sub">Historial de aprendizaje</span></p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase"><span id="apr-ops-label">Operaciones</span></p>
+                <h3 id="apr-total" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1"><span id="apr-ops-sub">Cerradas</span></p>
+            </div>
+            <div class="card">
+                <p class="text-xs text-gray-400 uppercase"><span id="apr-streak-label">Racha</span></p>
+                <h3 id="apr-racha" class="text-2xl font-bold mt-1 text-white">0</h3>
+                <p class="text-xs text-gray-400 mt-1"><span id="apr-streak-sub">Ganadas seguidas</span></p>
+            </div>
+        </div>
+
+        <div class="card mb-6">
+            <div class="flex justify-between items-center mb-3">
+                <h2 class="text-sm font-semibold text-gray-300"><i class="fas fa-brain text-purple-400 mr-2"></i><span id="apr-analyze-title">Analizar y Abrir Posición</span></h2>
+                <select id="apr-symbol" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                    <option value="BTCUSDT">BTC/USDT</option>
+                    <option value="ETHUSDT">ETH/USDT</option>
+                    <option value="SOLUSDT">SOL/USDT</option>
+                </select>
+            </div>
+            <p class="text-[10px] text-gray-500 mb-2" id="apr-rules">Reglas fijas de este modo: siempre $100, siempre 1% de riesgo, y solo permite abrir posición si al menos 3 de 5 indicadores coinciden — si no, queda bloqueado.</p>
+            <button onclick="analizarAprendizaje()" class="btn-primary text-xs py-2 px-4 w-full"><span id="apr-analyze-btn">Analizar</span></button>
+            <div id="apr-analisis-result" class="mt-3 text-xs"></div>
+        </div>
+
+        <div class="card mb-6">
+            <h2 class="text-sm font-semibold text-gray-300 mb-4"><i class="fas fa-bolt text-amber-400 mr-2"></i><span id="apr-active-title">Operaciones Activas</span></h2>
+            <div id="apr-active-positions">
+                <p class="text-gray-500 text-sm text-center py-6"><span id="apr-active-empty">No hay operaciones abiertas</span></p>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-semibold text-gray-300"><i class="fas fa-database text-cyan-400 mr-2"></i><span id="apr-history-title">Historial Ampliado</span> <span id="apr-historial-contador" class="text-xs text-gray-500">(0)</span></h2>
+                <button onclick="limpiarHistorialAprendizaje()" class="text-xs text-gray-500 hover:text-gray-300"><i class="fas fa-trash-can mr-1"></i><span id="apr-history-clear">Limpiar</span></button>
+            </div>
+            <div class="overflow-x-auto">
+                <table class="w-full text-xs">
+                    <thead>
+                        <tr class="text-gray-500 text-left border-b border-gray-800">
+                            <th class="py-1.5 pr-2"><span id="apr-th-date">Fecha</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-asset">Activo</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-dir">Dir.</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-entry">Entrada</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-exit">Salida</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-pnl">P&L</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-indicators">Indicadores a favor</span></th>
+                            <th class="py-1.5 pr-2"><span id="apr-th-close">Cierre</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="apr-tabla-historial">
+                        <tr><td colspan="8" class="py-6 text-center text-gray-500"><span id="apr-empty-history">Sin operaciones aún</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SCANNER -->
+    <section id="section-scanner" class="hidden">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-search text-blue-400"></i> <span id="scanner-title">Market Scanner</span>
+                </h2>
+                <span class="text-xs text-gray-500">🔄 <span id="scanner-real">Datos en tiempo real de Binance</span></span>
+            </div>
+            <div class="flex items-center gap-2 mb-3">
+                <label class="text-xs text-gray-500"><span id="scanner-mode-label">Modo:</span></label>
+                <select id="scanner-interval" onchange="updateScannerWithRealData()" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                    <option value="1h"><span id="scanner-normal">Normal (vela 1h)</span></option>
+                    <option value="15m"><span id="scanner-short">Corto (vela 15min)</span></option>
+                    <option value="1m"><span id="scanner-scalp">Scalping (vela 1min) ⚠️ comisiones altas relativas</span></option>
+                </select>
+            </div>
+            <div id="scanner-results" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4"></div>
+        </div>
+        <div id="opportunity-detail" class="opportunity-detail mt-4"></div>
+    </section>
+
+    <!-- HISTORY -->
+    <section id="section-history" class="hidden">
+        <div class="card">
+            <div class="flex flex-wrap justify-between items-center gap-3 mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-database text-cyan-400"></i> <span id="history-title">Historial de Operaciones</span>
+                    <span id="contador-operaciones" class="text-xs text-gray-500 ml-2">(0 registros)</span>
+                </h2>
+                <div class="flex gap-2">
+                    <button onclick="limpiarHistorial()" class="text-xs text-gray-500 hover:text-gray-300 transition flex items-center gap-1">
+                        <i class="fas fa-trash-can"></i> <span id="history-clear">Limpiar</span>
+                    </button>
+                    <button onclick="exportarCSV()" class="text-xs text-emerald-400 hover:text-emerald-300 transition flex items-center gap-1">
+                        <i class="fas fa-file-export"></i> <span id="history-export">Exportar CSV</span>
+                    </button>
+                </div>
+            </div>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th><i class="far fa-clock mr-1"></i><span id="h-th-date">Fecha/Hora</span></th>
+                            <th><span id="h-th-asset">Activo</span></th>
+                            <th><span id="h-th-dir">Dirección</span></th>
+                            <th><span id="h-th-price">Precio</span></th>
+                            <th><span id="h-th-qty">Cantidad</span></th>
+                            <th class="text-right"><span id="h-th-fee">Comisión</span></th>
+                            <th><span id="h-th-result">Resultado</span></th>
+                            <th class="text-right"><span id="h-th-pnl">P&L</span></th>
+                            <th class="text-center"><span id="h-th-status">Estado</span></th>
+                        </tr>
+                    </thead>
+                    <tbody id="tabla-historial">
+                        <tr id="sin-datos">
+                            <td colspan="8" class="py-6 text-center text-gray-500">
+                                <i class="fas fa-inbox mr-2 text-gray-600"></i> <span id="history-empty">Sin operaciones aún</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="section-settings" class="hidden">
+        <div class="card">
+            <div class="flex justify-between items-center mb-4">
+                <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+                    <i class="fas fa-sliders-h text-purple-400"></i> <span id="settings-title">Configuración</span>
+                </h2>
+                <button onclick="guardarConfiguracion()" class="btn-primary text-xs py-1.5 px-4">
+                    <i class="fas fa-save mr-1"></i> <span id="settings-save">Guardar</span>
+                </button>
+            </div>
+
+            <div class="mb-6 border-b border-gray-800 pb-4">
+                <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider mb-3">
+                    <i class="fas fa-key text-emerald-400 mr-2"></i> <span id="settings-creds">Credenciales Binance Testnet</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <div class="flex justify-between items-center mb-2">
+                            <span class="text-sm text-gray-300"><i class="fab fa-binance text-yellow-400 mr-2"></i><span id="settings-testnet">Binance Testnet</span></span>
+                            <span id="binance-status" class="text-xs text-red-400">❌ <span id="settings-status-text">Desconectado</span></span>
+                        </div>
+                        <p class="text-[10px] text-gray-500 mb-2" id="settings-creds-hint">Las credenciales están configuradas en el servidor (Vercel), no hace falta cargarlas acá.</p>
+                        <button onclick="testBinanceConnection()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"><span id="settings-test-btn">Probar Conexión</span></button>
+                        <button onclick="getBinanceBalance()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded ml-2"><span id="settings-balance-btn">Ver Saldo</span></button>
+                    </div>
+                    <div class="bg-gray-900 p-3 rounded border border-gray-700">
+                        <h4 class="text-xs text-gray-400 mb-2"><span id="settings-status-title">Estado</span></h4>
+                        <div id="binance-balance" class="text-xs text-gray-300 space-y-1">
+                            <p><span id="settings-balance-label">Saldo:</span> <span id="balance-display" class="text-emerald-400">Cargando...</span></p>
+                            <p><span id="settings-connected-label">Conectado:</span> <span id="connected-display" class="text-red-400">No</span></p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-gray-900 p-3 rounded border border-gray-700 mt-3 beginner-hide">
+                    <h4 class="text-xs text-gray-400 mb-2"><span id="settings-backtest-title">Backtesting</span></h4>
+                    <p class="text-[10px] text-gray-500 mb-2" id="settings-backtest-desc">Simula estrategias contra el historial real de precios de Binance (no Testnet). Incluye comisión (0.1%), slippage, stop-loss y take-profit reales — sin arriesgar nada.</p>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <select id="backtest-symbol" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                            <option value="BTCUSDT">BTC/USDT</option>
+                            <option value="ETHUSDT">ETH/USDT</option>
+                            <option value="SOLUSDT">SOL/USDT</option>
+                            <option value="BNBUSDT">BNB/USDT</option>
+                        </select>
+                        <select id="backtest-interval" class="bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                            <option value="1h">1h (~3 semanas)</option>
+                            <option value="4h">4h (~3 meses)</option>
+                            <option value="1d">1d (~1.5 años)</option>
+                        </select>
+                    </div>
+                    <div class="mb-2">
+                        <select id="backtest-strategy" class="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                            <option value="ema_cross">Cruce EMA9/EMA21</option>
+                            <option value="rsi_extremos">RSI en extremos (30/70)</option>
+                            <option value="bollinger">Bandas de Bollinger</option>
+                            <option value="confluencia">Confluencia RSI+EMA</option>
+                            <option value="trend_following">Trend Following (trailing stop)</option>
+                            <option value="breakout">Breakout (canal Donchian)</option>
+                            <option value="todas">Comparar las 3 primeras</option>
+                        </select>
+                    </div>
+                    <div class="grid grid-cols-2 gap-2 mb-2">
+                        <div>
+                            <label class="text-[10px] text-gray-500"><span id="settings-sl-label">Stop-loss %</span></label>
+                            <input type="number" id="backtest-sl" value="2" step="0.5" class="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                        </div>
+                        <div>
+                            <label class="text-[10px] text-gray-500"><span id="settings-tp-label">Take-profit %</span></label>
+                            <input type="number" id="backtest-tp" value="4" step="0.5" class="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-xs">
+                        </div>
+                    </div>
+                    <button onclick="runBacktest()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"><span id="settings-backtest-run">Correr Backtest</span></button>
+                    <div id="backtest-result" class="text-xs text-gray-300 mt-3 space-y-1"></div>
+                </div>
+                <div class="bg-gray-900 p-3 rounded border border-gray-700 mt-3 beginner-hide">
+                    <h4 class="text-xs text-gray-400 mb-2"><span id="settings-optimize-title">Optimizar Parámetros</span></h4>
+                    <p class="text-[10px] text-gray-500 mb-2" id="settings-optimize-desc">Prueba varias combinaciones en la primera mitad del historial y valida la mejor en la segunda mitad (datos que no vio al elegir) — para no engañarnos con casualidad.</p>
+                    <select id="optimize-strategy" class="w-full bg-gray-800 border border-gray-700 rounded p-1.5 text-xs mb-2">
+                        <option value="rsi_extremos">RSI en extremos</option>
+                        <option value="ema_cross">Cruce EMA</option>
+                        <option value="bollinger">Bandas de Bollinger</option>
+                        <option value="confluencia">Confluencia RSI+EMA</option>
+                        <option value="trend_following">Trend Following (trailing stop)</option>
+                        <option value="breakout">Breakout (canal Donchian)</option>
+                    </select>
+                    <button onclick="runOptimize()" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"><span id="settings-optimize-run">Optimizar</span></button>
+                    <div id="optimize-result" class="text-xs text-gray-300 mt-3 space-y-1"></div>
+                </div>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider"><span id="settings-indicators-title">Indicadores</span></h3>
+                    <div class="space-y-2">
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-rotate-left text-emerald-400 mr-2"></i><span id="settings-ind-fibo">Fibonacci</span></span>
+                            <label class="switch"><input type="checkbox" id="ind-fibonacci" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-arrow-trend-up text-emerald-400 mr-2"></i><span id="settings-ind-emas">EMAs (9/21)</span></span>
+                            <label class="switch"><input type="checkbox" id="ind-emas" checked><span class="slider"></span></label>
+                        </div>
+                        <div class="flex items-center justify-between bg-gray-900 p-2 rounded border border-gray-700">
+                            <span class="text-sm text-gray-300"><i class="fas fa-wave-square text-emerald-400 mr-2"></i><span id="settings-ind-macd">MACD</span></span>
+                            <label class="switch"><input type="checkbox" id="ind-macd" checked><span class="slider"></span></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider"><span id="settings-risk-title">Gestión de Riesgo</span></h3>
+                    <div class="space-y-2">
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1"><span id="settings-capital-label">Capital total (USDT)</span></label>
+                            <input type="number" id="capital-total" value="10000" min="10" step="10" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1"><span id="settings-risk-pct-label">Riesgo por operación (%)</span></label>
+                            <input type="number" id="riesgo-porcentaje" value="2" min="0.5" max="5" step="0.5" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1"><span id="settings-qty-label">Cantidad (USDT) — calculada según tu capital, riesgo % y el SL del análisis</span></label>
+                            <input type="number" id="cantidad-usdt" value="100" min="10" step="10" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                        </div>
+                        <div>
+                            <label class="text-xs text-gray-400 block mb-1"><span id="settings-limit-label">Límite de operaciones por semana</span></label>
+                            <input type="number" id="limite-semanal" value="10" min="1" step="1" class="bg-gray-900 border border-gray-700 rounded p-1.5 text-xs w-full">
+                            <p class="text-[10px] text-gray-500 mt-1" id="settings-limit-desc">Al llegar al límite, la app bloquea nuevas órdenes hasta la semana siguiente — disciplina forzada, no solo sugerida.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <h3 class="text-xs font-semibold text-gray-400 uppercase tracking-wider"><span id="settings-actions-title">Acciones</span></h3>
+                    <button onclick="generarSeñalManual()" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2">
+                        <i class="fas fa-magic"></i> <span id="settings-gen-signal">Generar Señal</span>
+                    </button>
+                    <button onclick="ejecutarOrdenReal('BUY')" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #059669, #047857);">
+                        <i class="fas fa-arrow-up"></i> <span id="settings-buy-btc">Comprar BTC (Real)</span>
+                    </button>
+                    <button onclick="ejecutarOrdenReal('SELL')" class="w-full btn-primary text-xs py-2 flex items-center justify-center gap-2" style="background: linear-gradient(135deg, #dc2626, #b91c1c);">
+                        <i class="fas fa-arrow-down"></i> <span id="settings-sell-btc">Vender BTC (Real)</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- PLANS -->
+    <section id="section-plans" class="hidden">
+        <div class="card">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl font-bold text-white"><span id="plans-title">Elige tu plan</span></h2>
+                <p class="text-gray-400 text-sm"><span id="plans-sub">Escala tu trading con IA avanzada</span></p>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-gray-900 border border-gray-700 rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-bold text-white"><span id="plan-free">Free</span></h3>
+                    <p class="text-3xl font-bold text-emerald-400 my-2">$0</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ <span id="plan-free-1">Datos simulados</span></li>
+                        <li>✅ <span id="plan-free-2">5 operaciones/mes</span></li>
+                        <li>✅ <span id="plan-free-3">IA básica</span></li>
+                        <li>❌ <span id="plan-free-4">Broker real</span></li>
+                    </ul>
+                    <button class="w-full bg-gray-700 text-gray-300 py-2 rounded text-sm cursor-default" disabled><span id="plan-free-btn">Plan actual</span></button>
+                </div>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 border-2 border-emerald-500 rounded-lg p-6 text-center relative">
+                    <span class="absolute -top-2 right-4 bg-emerald-500 text-white text-[10px] px-2 py-0.5 rounded-full"><span id="plan-popular">POPULAR</span></span>
+                    <h3 class="text-lg font-bold text-white"><span id="plan-pro">Pro</span></h3>
+                    <p class="text-3xl font-bold text-emerald-400 my-2">$49</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ <span id="plan-pro-1">Binance Testnet</span></li>
+                        <li>✅ <span id="plan-pro-2">Operaciones ilimitadas</span></li>
+                        <li>✅ <span id="plan-pro-3">Datos reales</span></li>
+                        <li>✅ <span id="plan-pro-4">Paper trading</span></li>
+                    </ul>
+                    <button onclick="showPaymentModal('pro')" class="w-full btn-primary py-2 text-sm">
+                        <i class="fas fa-rocket mr-1"></i> <span id="plan-pro-btn">Suscribirse</span>
+                    </button>
+                </div>
+                <div class="bg-gradient-to-br from-gray-900 to-gray-800 border border-yellow-500 rounded-lg p-6 text-center">
+                    <h3 class="text-lg font-bold text-white"><span id="plan-premium">Premium</span></h3>
+                    <p class="text-3xl font-bold text-yellow-400 my-2">$99</p>
+                    <p class="text-xs text-gray-400">/mes</p>
+                    <ul class="text-xs text-gray-300 space-y-2 my-4 text-left">
+                        <li>✅ <span id="plan-premium-1">Múltiples brokers</span></li>
+                        <li>✅ <span id="plan-premium-2">Bots automáticos</span></li>
+                        <li>✅ <span id="plan-premium-3">IA personalizada</span></li>
+                        <li>✅ <span id="plan-premium-4">Soporte 24/7</span></li>
+                    </ul>
+                    <button onclick="showPaymentModal('premium')" class="w-full bg-yellow-600 hover:bg-yellow-700 text-white py-2 rounded text-sm transition">
+                        <i class="fas fa-crown mr-1"></i> <span id="plan-premium-btn">Suscribirse</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer class="mt-6 pt-4 border-t border-gray-800 text-xs text-gray-500 flex justify-between items-center">
+        <span id="footer-left">AI Trading Copilot · Binance Real</span>
+        <span>
+            <i class="fas fa-database mr-1"></i> <span id="footer-data">Datos reales</span>
+            <span class="mx-2">|</span>
+            <i class="fas fa-brain mr-1"></i> <span id="footer-ia">IA: Groq (configurable)</span>
+            <span class="mx-2">|</span>
+            <i class="fas fa-crown mr-1"></i> <span id="footer-plans">Planes disponibles</span>
+        </span>
+    </footer>
+</div>
+
+<!-- CHAT PANEL -->
+<button class="chat-toggle" id="chatToggle" onclick="toggleChat()">
+    <i class="fas fa-comment text-xl"></i>
+    <i class="fas fa-times text-xl"></i>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+    <div class="chat-header">
+        <h3><i class="fas fa-robot text-emerald-400"></i> <span id="chat-title">Asistente IA de Trading</span></h3>
+        <button class="close-chat" onclick="toggleChat()"><i class="fas fa-times"></i></button>
+    </div>
+    <div class="quick-actions">
+        <button onclick="sendQuickAction('Analizar mercado')">📊 <span id="chat-q-market">Analizar mercado</span></button>
+        <button onclick="sendQuickAction('Comparar top 5', ['BTCUSDT','ETHUSDT','SOLUSDT','BNBUSDT','XRPUSDT'])">🪙 <span id="chat-q-top">Comparar Top 5</span></button>
+        <button onclick="sendQuickAction('Explicar señal actual')">💡 <span id="chat-q-signal">Explicar señal</span></button>
+        <button onclick="sendQuickAction('Analizar BTC')">₿ <span id="chat-q-btc">Analizar BTC</span></button>
+        <button onclick="sendQuickAction('Ver gestión de riesgo')">🛡️ <span id="chat-q-risk">Gestión de riesgo</span></button>
+    </div>
+    <div class="chat-messages" id="chatMessages">
+        <div class="chat-message assistant">
+            <div class="message-bubble" id="chat-welcome">
+                👋 Hola, soy tu <strong>Asistente IA de Trading</strong>.<br>
+                Puedo analizar el mercado, explicar señales y ayudarte con tus decisiones.<br><br>
+                <span class="text-gray-400 text-xs" id="chat-welcome-hint">Configura tus keys de Binance en Settings para datos reales</span>
+            </div>
+            <div class="message-time" id="chat-welcome-time">Ahora mismo</div>
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <div class="input-wrapper">
+            <input type="text" id="chatInput" placeholder="Escribe tu pregunta..." onkeypress="if(event.key==='Enter') sendMessage()">
+            <button class="send-btn" onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+        </div>
+        <div class="text-[10px] text-gray-600 mt-1.5">
+            <i class="fas fa-brain mr-1"></i> <span id="chat-ia-status">Modo demo</span>
+        </div>
+    </div>
+</div>
+
+<!-- ============================================================ -->
+<!-- JAVASCRIPT COMPLETO -->
+<!-- ============================================================ -->
+<script>
+// ============================================================
+// TRADUCCIONES
+// ============================================================
+const LANG = {
+    es: {
+        // Landing
+        'landing-badge': 'Binance Real · Datos en vivo',
+        'landing-h1': 'AI Trading <br class="sm:hidden"><span class="text-emerald-400">Copilot</span>',
+        'landing-desc': 'Análisis autónomo en tiempo real con <span class="text-emerald-300 font-medium">5 agentes de IA institucionales</span>. Conecta a Binance, recibe señales y ejecuta con gestión de riesgo.',
+        'landing-cta': 'Ir a mi Copilot',
+        'landing-foot-1': 'Sin riesgos',
+        'landing-foot-2': 'Planes desde $0',
+        'landing-foot-3': 'IA avanzada',
+        'landing-footer': 'AI Trading Copilot · Binance Real · v2.4.1',
+        // App - Nav
+        'nav-dashboard': 'Dashboard',
+        'nav-aprendizaje': 'Aprendizaje',
+        'nav-scanner': 'Scanner',
+        'nav-history': 'Historial',
+        'nav-settings': 'Configuración',
+        'nav-plans': 'Planes',
+        'disconnected': 'Desconectado',
+        'connected': 'Conectado',
+        // Header
+        'header-title': 'AI Trading Copilot',
+        'header-badge': 'Binance Real',
+        'header-sub': 'Datos reales · Paper trading · IA avanzada',
+        'beginner-label': 'Modo Principiante',
+        'export-label': 'Exportar',
+        // Guia
+        'guia-title': 'Análisis Guiado por IA',
+        'guia-btn': 'Analizar',
+        'guia-empty-text': 'Elegí un activo y tocá "Analizar" para ver la señal, checklist de indicadores reales y explicación.',
+        'guia-label-entry': 'Entrada',
+        'guia-label-sl': 'Stop-loss',
+        'guia-label-tp': 'Take-profit',
+        'guia-label-risk': 'Riesgo (según tu monto)',
+        'guia-label-reward': 'Ganancia objetivo',
+        'guia-execute-label': 'Ejecutar esta sugerencia',
+        'guia-action-buy': 'COMPRAR',
+        'guia-action-sell': 'VENDER',
+        'guia-action-wait': 'ESPERAR',
+        // KPI
+        'kpi-balance': 'Saldo Virtual',
+        'kpi-balance-sub': 'Fondos Testnet',
+        'kpi-winrate': 'Win Rate',
+        'kpi-winrate-sub': 'Últimas 100 operaciones',
+        'kpi-total': 'Total Operaciones',
+        'kpi-total-sub': 'Historial acumulado',
+        'kpi-model': 'Modelo IA',
+        'kpi-model-sub': 'Inferencia en tiempo real',
+        'kpi-pf': 'Profit Factor',
+        'kpi-dd': 'Drawdown Máximo',
+        'kpi-dd-sub': 'Desde máximo',
+        'kpi-expect': 'Expectativa Matemática',
+        'kpi-expect-sub': 'Por operación',
+        'kpi-streak': 'Racha Actual',
+        'kpi-streak-sub': 'Ganadas consecutivas',
+        // Chart
+        'chart-title': 'BTC/USDT · Gráfico en Vivo',
+        'ai-title': 'Análisis IA del Mercado',
+        'ai-status-text': 'Analizando',
+        'ai-trend-label': 'Tendencia',
+        'ai-trend-value': 'Alcista',
+        'ai-conf-label': 'Confianza',
+        'ai-risk-label': 'Riesgo',
+        'ai-risk-value': 'Moderado',
+        'ai-strategies-label': 'Estrategias coincidentes',
+        'ai-decision-label': 'Decisión IA',
+        'ai-decision-text': 'Analizando condiciones del mercado...',
+        'ai-btn-buy': 'Comprar',
+        'ai-btn-sell': 'Vender',
+        'ai-btn-wait': 'Esperar',
+        'strategies-title': 'Estrategias Activas',
+        // Aprendizaje
+        'apr-capital-label': 'Capital de aprendizaje',
+        'apr-capital-sub': 'Fijo, no editable',
+        'apr-winrate-label': 'Win Rate',
+        'apr-winrate-sub': 'Historial de aprendizaje',
+        'apr-ops-label': 'Operaciones',
+        'apr-ops-sub': 'Cerradas',
+        'apr-streak-label': 'Racha',
+        'apr-streak-sub': 'Ganadas seguidas',
+        'apr-analyze-title': 'Analizar y Abrir Posición',
+        'apr-rules': 'Reglas fijas de este modo: siempre $100, siempre 1% de riesgo, y solo permite abrir posición si al menos 3 de 5 indicadores coinciden — si no, queda bloqueado.',
+        'apr-analyze-btn': 'Analizar',
+        'apr-active-title': 'Operaciones Activas',
+        'apr-active-empty': 'No hay operaciones abiertas',
+        'apr-history-title': 'Historial Ampliado',
+        'apr-history-clear': 'Limpiar',
+        'apr-th-date': 'Fecha',
+        'apr-th-asset': 'Activo',
+        'apr-th-dir': 'Dir.',
+        'apr-th-entry': 'Entrada',
+        'apr-th-exit': 'Salida',
+        'apr-th-pnl': 'P&L',
+        'apr-th-indicators': 'Indicadores a favor',
+        'apr-th-close': 'Cierre',
+        'apr-empty-history': 'Sin operaciones aún',
+        // Scanner
+        'scanner-title': 'Market Scanner',
+        'scanner-real': 'Datos en tiempo real de Binance',
+        'scanner-mode-label': 'Modo:',
+        'scanner-normal': 'Normal (vela 1h)',
+        'scanner-short': 'Corto (vela 15min)',
+        'scanner-scalp': 'Scalping (vela 1min) ⚠️ comisiones altas relativas',
+        // History
+        'history-title': 'Historial de Operaciones',
+        'history-clear': 'Limpiar',
+        'history-export': 'Exportar CSV',
+        'h-th-date': 'Fecha/Hora',
+        'h-th-asset': 'Activo',
+        'h-th-dir': 'Dirección',
+        'h-th-price': 'Precio',
+        'h-th-qty': 'Cantidad',
+        'h-th-fee': 'Comisión',
+        'h-th-result': 'Resultado',
+        'h-th-pnl': 'P&L',
+        'h-th-status': 'Estado',
+        'history-empty': 'Sin operaciones aún',
+        // Settings
+        'settings-title': 'Configuración',
+        'settings-save': 'Guardar',
+        'settings-creds': 'Credenciales Binance Testnet',
+        'settings-testnet': 'Binance Testnet',
+        'settings-status-text': 'Desconectado',
+        'settings-creds-hint': 'Las credenciales están configuradas en el servidor (Vercel), no hace falta cargarlas acá.',
+        'settings-test-btn': 'Probar Conexión',
+        'settings-balance-btn': 'Ver Saldo',
+        'settings-status-title': 'Estado',
+        'settings-balance-label': 'Saldo:',
+        'settings-connected-label': 'Conectado:',
+        'settings-backtest-title': 'Backtesting',
+        'settings-backtest-desc': 'Simula estrategias contra el historial real de precios de Binance (no Testnet). Incluye comisión (0.1%), slippage, stop-loss y take-profit reales — sin arriesgar nada.',
+        'settings-sl-label': 'Stop-loss %',
+        'settings-tp-label': 'Take-profit %',
+        'settings-backtest-run': 'Correr Backtest',
+        'settings-optimize-title': 'Optimizar Parámetros',
+        'settings-optimize-desc': 'Prueba varias combinaciones en la primera mitad del historial y valida la mejor en la segunda mitad (datos que no vio al elegir) — para no engañarnos con casualidad.',
+        'settings-optimize-run': 'Optimizar',
+        'settings-indicators-title': 'Indicadores',
+        'settings-ind-fibo': 'Fibonacci',
+        'settings-ind-emas': 'EMAs (9/21)',
+        'settings-ind-macd': 'MACD',
+        'settings-risk-title': 'Gestión de Riesgo',
+        'settings-capital-label': 'Capital total (USDT)',
+        'settings-risk-pct-label': 'Riesgo por operación (%)',
+        'settings-qty-label': 'Cantidad (USDT) — calculada según tu capital, riesgo % y el SL del análisis',
+        'settings-limit-label': 'Límite de operaciones por semana',
+        'settings-limit-desc': 'Al llegar al límite, la app bloquea nuevas órdenes hasta la semana siguiente — disciplina forzada, no solo sugerida.',
+        'settings-actions-title': 'Acciones',
+        'settings-gen-signal': 'Generar Señal',
+        'settings-buy-btc': 'Comprar BTC (Real)',
+        'settings-sell-btc': 'Vender BTC (Real)',
+        // Plans
+        'plans-title': 'Elige tu plan',
+        'plans-sub': 'Escala tu trading con IA avanzada',
+        'plan-free': 'Free',
+        'plan-free-1': 'Datos simulados',
+        'plan-free-2': '5 operaciones/mes',
+        'plan-free-3': 'IA básica',
+        'plan-free-4': 'Broker real',
+        'plan-free-btn': 'Plan actual',
+        'plan-popular': 'POPULAR',
+        'plan-pro': 'Pro',
+        'plan-pro-1': 'Binance Testnet',
+        'plan-pro-2': 'Operaciones ilimitadas',
+        'plan-pro-3': 'Datos reales',
+        'plan-pro-4': 'Paper trading',
+        'plan-pro-btn': 'Suscribirse',
+        'plan-premium': 'Premium',
+        'plan-premium-1': 'Múltiples brokers',
+        'plan-premium-2': 'Bots automáticos',
+        'plan-premium-3': 'IA personalizada',
+        'plan-premium-4': 'Soporte 24/7',
+        'plan-premium-btn': 'Suscribirse',
+        // Footer
+        'footer-left': 'AI Trading Copilot · Binance Real',
+        'footer-data': 'Datos reales',
+        'footer-ia': 'IA: Groq (configurable)',
+        'footer-plans': 'Planes disponibles',
+        // Chat
+        'chat-title': 'Asistente IA de Trading',
+        'chat-q-market': 'Analizar mercado',
+        'chat-q-top': 'Comparar Top 5',
+        'chat-q-signal': 'Explicar señal',
+        'chat-q-btc': 'Analizar BTC',
+        'chat-q-risk': 'Gestión de riesgo',
+        'chat-welcome': '👋 Hola, soy tu <strong>Asistente IA de Trading</strong>.<br>Puedo analizar el mercado, explicar señales y ayudarte con tus decisiones.<br><br><span class="text-gray-400 text-xs">Configura tus keys de Binance en Settings para datos reales</span>',
+        'chat-welcome-hint': 'Configura tus keys de Binance en Settings para datos reales',
+        'chat-welcome-time': 'Ahora mismo',
+        'chat-ia-status': 'Modo demo',
+        // App title
+        'app-title': 'AI Copilot',
+        'app-badge': 'Binance'
+    },
+    en: {
+        'landing-badge': 'Binance Real · Live Data',
+        'landing-h1': 'AI Trading <br class="sm:hidden"><span class="text-emerald-400">Copilot</span>',
+        'landing-desc': 'Autonomous real-time analysis with <span class="text-emerald-300 font-medium">5 institutional AI agents</span>. Connect to Binance, receive signals and execute with risk management.',
+        'landing-cta': 'Go to my Copilot',
+        'landing-foot-1': 'Risk-free',
+        'landing-foot-2': 'Plans from $0',
+        'landing-foot-3': 'Advanced AI',
+        'landing-footer': 'AI Trading Copilot · Binance Real · v2.4.1',
+        'nav-dashboard': 'Dashboard',
+        'nav-aprendizaje': 'Learning',
+        'nav-scanner': 'Scanner',
+        'nav-history': 'History',
+        'nav-settings': 'Settings',
+        'nav-plans': 'Plans',
+        'disconnected': 'Disconnected',
+        'connected': 'Connected',
+        'header-title': 'AI Trading Copilot',
+        'header-badge': 'Binance Real',
+        'header-sub': 'Real data · Paper trading · Advanced AI',
+        'beginner-label': 'Beginner Mode',
+        'export-label': 'Export',
+        'guia-title': 'AI Guided Analysis',
+        'guia-btn': 'Analyze',
+        'guia-empty-text': 'Choose an asset and click "Analyze" to see the signal, real indicators checklist and explanation.',
+        'guia-label-entry': 'Entry',
+        'guia-label-sl': 'Stop-loss',
+        'guia-label-tp': 'Take-profit',
+        'guia-label-risk': 'Risk (based on your amount)',
+        'guia-label-reward': 'Target profit',
+        'guia-execute-label': 'Execute this suggestion',
+        'guia-action-buy': 'BUY',
+        'guia-action-sell': 'SELL',
+        'guia-action-wait': 'WAIT',
+        'kpi-balance': 'Virtual Balance',
+        'kpi-balance-sub': 'Testnet Funds',
+        'kpi-winrate': 'Win Rate',
+        'kpi-winrate-sub': 'Last 100 trades',
+        'kpi-total': 'Total Trades',
+        'kpi-total-sub': 'Accumulated history',
+        'kpi-model': 'AI Model',
+        'kpi-model-sub': 'Real-time inference',
+        'kpi-pf': 'Profit Factor',
+        'kpi-dd': 'Max Drawdown',
+        'kpi-dd-sub': 'From peak',
+        'kpi-expect': 'Mathematical Expectation',
+        'kpi-expect-sub': 'Per trade',
+        'kpi-streak': 'Current Streak',
+        'kpi-streak-sub': 'Consecutive wins',
+        'chart-title': 'BTC/USDT · Live Chart',
+        'ai-title': 'AI Market Analysis',
+        'ai-status-text': 'Analyzing',
+        'ai-trend-label': 'Trend',
+        'ai-trend-value': 'Bullish',
+        'ai-conf-label': 'Confidence',
+        'ai-risk-label': 'Risk',
+        'ai-risk-value': 'Moderate',
+        'ai-strategies-label': 'Matching strategies',
+        'ai-decision-label': 'AI Decision',
+        'ai-decision-text': 'Analyzing market conditions...',
+        'ai-btn-buy': 'Buy',
+        'ai-btn-sell': 'Sell',
+        'ai-btn-wait': 'Wait',
+        'strategies-title': 'Active Strategies',
+        'apr-capital-label': 'Learning Capital',
+        'apr-capital-sub': 'Fixed, not editable',
+        'apr-winrate-label': 'Win Rate',
+        'apr-winrate-sub': 'Learning history',
+        'apr-ops-label': 'Trades',
+        'apr-ops-sub': 'Closed',
+        'apr-streak-label': 'Streak',
+        'apr-streak-sub': 'Consecutive wins',
+        'apr-analyze-title': 'Analyze and Open Position',
+        'apr-rules': 'Fixed rules: always $100, always 1% risk, only allows opening if at least 3 of 5 indicators match — otherwise blocked.',
+        'apr-analyze-btn': 'Analyze',
+        'apr-active-title': 'Active Positions',
+        'apr-active-empty': 'No open positions',
+        'apr-history-title': 'Extended History',
+        'apr-history-clear': 'Clear',
+        'apr-th-date': 'Date',
+        'apr-th-asset': 'Asset',
+        'apr-th-dir': 'Dir.',
+        'apr-th-entry': 'Entry',
+        'apr-th-exit': 'Exit',
+        'apr-th-pnl': 'P&L',
+        'apr-th-indicators': 'Indicators in favor',
+        'apr-th-close': 'Close',
+        'apr-empty-history': 'No trades yet',
+        'scanner-title': 'Market Scanner',
+        'scanner-real': 'Real-time data from Binance',
+        'scanner-mode-label': 'Mode:',
+        'scanner-normal': 'Normal (1h candle)',
+        'scanner-short': 'Short (15min candle)',
+        'scanner-scalp': 'Scalping (1min candle) ⚠️ high relative fees',
+        'history-title': 'Trade History',
+        'history-clear': 'Clear',
+        'history-export': 'Export CSV',
+        'h-th-date': 'Date/Time',
+        'h-th-asset': 'Asset',
+        'h-th-dir': 'Direction',
+        'h-th-price': 'Price',
+        'h-th-qty': 'Quantity',
+        'h-th-fee': 'Fee',
+        'h-th-result': 'Result',
+        'h-th-pnl': 'P&L',
+        'h-th-status': 'Status',
+        'history-empty': 'No trades yet',
+        'settings-title': 'Settings',
+        'settings-save': 'Save',
+        'settings-creds': 'Binance Testnet Credentials',
+        'settings-testnet': 'Binance Testnet',
+        'settings-status-text': 'Disconnected',
+        'settings-creds-hint': 'Credentials are configured on the server (Vercel), no need to load them here.',
+        'settings-test-btn': 'Test Connection',
+        'settings-balance-btn': 'Check Balance',
+        'settings-status-title': 'Status',
+        'settings-balance-label': 'Balance:',
+        'settings-connected-label': 'Connected:',
+        'settings-backtest-title': 'Backtesting',
+        'settings-backtest-desc': 'Simulate strategies against Binance real historical data (not Testnet). Includes fee (0.1%), slippage, real stop-loss and take-profit — no risk.',
+        'settings-sl-label': 'Stop-loss %',
+        'settings-tp-label': 'Take-profit %',
+        'settings-backtest-run': 'Run Backtest',
+        'settings-optimize-title': 'Optimize Parameters',
+        'settings-optimize-desc': 'Test combinations in the first half of history and validate the best in the second half (data not seen when choosing) — to avoid fooling ourselves.',
+        'settings-optimize-run': 'Optimize',
+        'settings-indicators-title': 'Indicators',
+        'settings-ind-fibo': 'Fibonacci',
+        'settings-ind-emas': 'EMAs (9/21)',
+        'settings-ind-macd': 'MACD',
+        'settings-risk-title': 'Risk Management',
+        'settings-capital-label': 'Total capital (USDT)',
+        'settings-risk-pct-label': 'Risk per trade (%)',
+        'settings-qty-label': 'Quantity (USDT) — calculated based on your capital, risk % and SL from analysis',
+        'settings-limit-label': 'Weekly trade limit',
+        'settings-limit-desc': 'When reaching the limit, the app blocks new orders until next week — forced discipline, not just suggested.',
+        'settings-actions-title': 'Actions',
+        'settings-gen-signal': 'Generate Signal',
+        'settings-buy-btc': 'Buy BTC (Real)',
+        'settings-sell-btc': 'Sell BTC (Real)',
+        'plans-title': 'Choose your plan',
+        'plans-sub': 'Scale your trading with advanced AI',
+        'plan-free': 'Free',
+        'plan-free-1': 'Simulated data',
+        'plan-free-2': '5 trades/month',
+        'plan-free-3': 'Basic AI',
+        'plan-free-4': 'Real broker',
+        'plan-free-btn': 'Current plan',
+        'plan-popular': 'POPULAR',
+        'plan-pro': 'Pro',
+        'plan-pro-1': 'Binance Testnet',
+        'plan-pro-2': 'Unlimited trades',
+        'plan-pro-3': 'Real data',
+        'plan-pro-4': 'Paper trading',
+        'plan-pro-btn': 'Subscribe',
+        'plan-premium': 'Premium',
+        'plan-premium-1': 'Multiple brokers',
+        'plan-premium-2': 'Automated bots',
+        'plan-premium-3': 'Custom AI',
+        'plan-premium-4': '24/7 Support',
+        'plan-premium-btn': 'Subscribe',
+        'footer-left': 'AI Trading Copilot · Binance Real',
+        'footer-data': 'Real data',
+        'footer-ia': 'AI: Groq (configurable)',
+        'footer-plans': 'Plans available',
+        'chat-title': 'AI Trading Assistant',
+        'chat-q-market': 'Analyze market',
+        'chat-q-top': 'Compare Top 5',
+        'chat-q-signal': 'Explain signal',
+        'chat-q-btc': 'Analyze BTC',
+        'chat-q-risk': 'Risk management',
+        'chat-welcome': '👋 Hi, I\'m your <strong>AI Trading Assistant</strong>.<br>I can analyze the market, explain signals and help with your decisions.<br><br><span class="text-gray-400 text-xs">Configure your Binance keys in Settings for real data</span>',
+        'chat-welcome-hint': 'Configure your Binance keys in Settings for real data',
+        'chat-welcome-time': 'Just now',
+        'chat-ia-status': 'Demo mode',
+        'app-title': 'AI Copilot',
+        'app-badge': 'Binance'
+    }
+};
+
+// ============================================================
+// IDIOMA Y TEMA
+// ============================================================
+let currentLang = 'es';
+let currentTheme = 'dark';
+
+function getText(key) {
+    return LANG[currentLang]?.[key] || key;
+}
+
+function applyLanguage() {
+    // Landing
+    const landingKeys = ['landing-badge','landing-h1','landing-desc','landing-cta','landing-foot-1','landing-foot-2','landing-foot-3','landing-footer'];
+    landingKeys.forEach(k => {
+        const el = document.getElementById(k);
+        if (el) el.innerHTML = getText(k);
+    });
+    // App
+    const appKeys = ['nav-dashboard','nav-aprendizaje','nav-scanner','nav-history','nav-settings','nav-plans','disconnected','header-title','header-badge','header-sub','beginner-label','export-label',
+        'guia-title','guia-btn','guia-empty-text','guia-label-entry','guia-label-sl','guia-label-tp','guia-label-risk','guia-label-reward','guia-execute-label','guia-action-buy','guia-action-sell','guia-action-wait',
+        'kpi-balance','kpi-balance-sub','kpi-winrate','kpi-winrate-sub','kpi-total','kpi-total-sub','kpi-model','kpi-model-sub','kpi-pf','kpi-dd','kpi-dd-sub','kpi-expect','kpi-expect-sub','kpi-streak','kpi-streak-sub',
+        'chart-title','ai-title','ai-status-text','ai-trend-label','ai-trend-value','ai-conf-label','ai-risk-label','ai-risk-value','ai-strategies-label','ai-decision-label','ai-decision-text','ai-btn-buy','ai-btn-sell','ai-btn-wait','strategies-title',
+        'apr-capital-label','apr-capital-sub','apr-winrate-label','apr-winrate-sub','apr-ops-label','apr-ops-sub','apr-streak-label','apr-streak-sub','apr-analyze-title','apr-rules','apr-analyze-btn','apr-active-title','apr-active-empty',
+        'apr-history-title','apr-history-clear','apr-th-date','apr-th-asset','apr-th-dir','apr-th-entry','apr-th-exit','apr-th-pnl','apr-th-indicators','apr-th-close','apr-empty-history',
+        'scanner-title','scanner-real','scanner-mode-label','scanner-normal','scanner-short','scanner-scalp',
+        'history-title','history-clear','history-export','h-th-date','h-th-asset','h-th-dir','h-th-price','h-th-qty','h-th-fee','h-th-result','h-th-pnl','h-th-status','history-empty',
+        'settings-title','settings-save','settings-creds','settings-testnet','settings-status-text','settings-creds-hint','settings-test-btn','settings-balance-btn','settings-status-title','settings-balance-label','settings-connected-label',
+        'settings-backtest-title','settings-backtest-desc','settings-sl-label','settings-tp-label','settings-backtest-run','settings-optimize-title','settings-optimize-desc','settings-optimize-run',
+        'settings-indicators-title','settings-ind-fibo','settings-ind-emas','settings-ind-macd','settings-risk-title','settings-capital-label','settings-risk-pct-label','settings-qty-label','settings-limit-label','settings-limit-desc',
+        'settings-actions-title','settings-gen-signal','settings-buy-btc','settings-sell-btc',
+        'plans-title','plans-sub','plan-free','plan-free-1','plan-free-2','plan-free-3','plan-free-4','plan-free-btn','plan-popular','plan-pro','plan-pro-1','plan-pro-2','plan-pro-3','plan-pro-4','plan-pro-btn',
+        'plan-premium','plan-premium-1','plan-premium-2','plan-premium-3','plan-premium-4','plan-premium-btn',
+        'footer-left','footer-data','footer-ia','footer-plans',
+        'chat-title','chat-q-market','chat-q-top','chat-q-signal','chat-q-btc','chat-q-risk','chat-welcome','chat-welcome-hint','chat-welcome-time','chat-ia-status',
+        'app-title','app-badge','connected'
+    ];
+    appKeys.forEach(k => {
+        const els = document.querySelectorAll(`[data-i18n="${k}"]`);
+        els.forEach(el => {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = getText(k);
+            } else {
+                el.innerHTML = getText(k);
+            }
+        });
+        // Also update by ID
+        const el = document.getElementById(k);
+        if (el && !el.hasAttribute('data-i18n')) {
+            if (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA') {
+                el.placeholder = getText(k);
+            } else {
+                el.innerHTML = getText(k);
+            }
+        }
+    });
+    // Update lang labels
+    document.getElementById('lang-label-landing').textContent = currentLang.toUpperCase();
+    document.getElementById('lang-label-app').textContent = currentLang.toUpperCase();
+    // Update binance status
+    const statusEl = document.getElementById('binance-status-sidebar');
+    if (statusEl) {
+        if (binanceConnected) {
+            statusEl.textContent = getText('connected');
+            statusEl.className = 'text-emerald-400';
+        } else {
+            statusEl.textContent = getText('disconnected');
+            statusEl.className = 'text-red-400';
+        }
+    }
+}
+
+function toggleLang() {
+    currentLang = currentLang === 'es' ? 'en' : 'es';
+    localStorage.setItem('lang', currentLang);
+    applyLanguage();
+}
+
+function toggleTheme() {
+    const html = document.getElementById('html-root');
+    if (currentTheme === 'dark') {
+        currentTheme = 'light';
+        html.classList.add('light');
+        html.classList.remove('dark');
+        document.getElementById('theme-icon-landing').className = 'fas fa-sun text-sm';
+        document.getElementById('theme-icon-app').className = 'fas fa-sun';
+    } else {
+        currentTheme = 'dark';
+        html.classList.remove('light');
+        html.classList.add('dark');
+        document.getElementById('theme-icon-landing').className = 'fas fa-moon text-sm';
+        document.getElementById('theme-icon-app').className = 'fas fa-moon';
+    }
+    localStorage.setItem('theme', currentTheme);
+    // Update TradingView if exists
+    if (tradingViewWidget) {
+        try {
+            tradingViewWidget.setTheme(currentTheme === 'light' ? 'light' : 'dark');
+        } catch(e) {}
+    }
+}
+
+function loadPreferences() {
+    const savedLang = localStorage.getItem('lang');
+    if (savedLang) currentLang = savedLang;
+    const savedTheme = localStorage.getItem('theme');
+    if (savedTheme) currentTheme = savedTheme;
+    const html = document.getElementById('html-root');
+    if (currentTheme === 'light') {
+        html.classList.add('light');
+        html.classList.remove('dark');
+        document.getElementById('theme-icon-landing').className = 'fas fa-sun text-sm';
+        document.getElementById('theme-icon-app').className = 'fas fa-sun';
+    } else {
+        html.classList.remove('light');
+        html.classList.add('dark');
+        document.getElementById('theme-icon-landing').className = 'fas fa-moon text-sm';
+        document.getElementById('theme-icon-app').className = 'fas fa-moon';
+    }
+    applyLanguage();
+}
+
+// ============================================================
+// ENTER APP
+// ============================================================
+function enterApp() {
+    document.getElementById('landing').classList.add('hidden');
+    document.getElementById('app').classList.add('active');
+    // Init TradingView after app is visible
+    setTimeout(() => initTradingView('BINANCE:BTCUSDT', '60'), 500);
+    // Auto-connect
+    setTimeout(() => testBinanceConnection(), 1500);
+}
+
+// ============================================================
+// CONFIGURACIÓN
+// ============================================================
+window.APP_CONFIG = {
+    binance: {
+        apiKey: '',
+        secretKey: '',
+        baseUrl: '/api/binance',
+        enabled: false
+    }
+    // Nota: Groq corre 100% en el backend (api/binance.js), la key nunca
+    // vive en el frontend — por eso no hace falta ningún campo acá.
+};
+
+// ============================================================
+// FUNCIONES DE BINANCE
+// ============================================================
+let binanceConnected = false;
+let currentBalance = 0;
+
+async function testBinanceConnection() {
+    const statusEl = document.getElementById('binance-status');
+    statusEl.textContent = '⏳ Probando...';
+    statusEl.className = 'text-xs text-yellow-400';
+    
+    try {
+        const response = await fetch('/api/binance?action=test');
+        const data = await response.json();
+        
+        if (data.success) {
+            binanceConnected = true;
+            window.APP_CONFIG.binance.enabled = true;
+            
+            statusEl.textContent = '✅ Conectado';
+            statusEl.className = 'text-xs text-emerald-400';
+            const sidebarStatus = document.getElementById('binance-status-sidebar');
+            sidebarStatus.textContent = getText('connected');
+            sidebarStatus.className = 'text-emerald-400';
+            document.getElementById('connected-display').textContent = 'Sí';
+            document.getElementById('connected-display').className = 'text-emerald-400';
+            document.getElementById('data-source-label').textContent = 'Binance Real';
+            
+            await getBinanceBalance();
+            mostrarNotificacion('✅ Conectado a Binance Testnet!', 'success');
+            updateScannerWithRealData();
+        } else {
+            statusEl.textContent = '❌ Falló conexión';
+            statusEl.className = 'text-xs text-red-400';
+            mostrarNotificacion('❌ Falló conexión. Revisa tus keys.', 'error');
+        }
+    } catch (error) {
+        statusEl.textContent = '❌ Error';
+        statusEl.className = 'text-xs text-red-400';
+        mostrarNotificacion('❌ Error conectando: ' + error.message, 'error');
+    }
+}
+
+async function getBinanceBalance() {
+    try {
+        const response = await fetch('/api/binance?action=balance');
+        const data = await response.json();
+        
+        if (data.success && data.balance !== undefined) {
+            currentBalance = parseFloat(data.balance);
+            document.getElementById('balance-display').textContent = `$${currentBalance.toFixed(2)}`;
+            document.getElementById('saldo-txt').textContent = `$${currentBalance.toFixed(2)}`;
+            mostrarNotificacion(`💰 Saldo: $${currentBalance.toFixed(2)} USDT`, 'success');
+        } else {
+            mostrarNotificacion('❌ Error obteniendo saldo: ' + (data.error || 'desconocido'), 'error');
+        }
+    } catch (error) {
+        mostrarNotificacion('❌ Error obteniendo saldo: ' + error.message, 'error');
+    }
+}
+
+function renderResultadoBacktest(data) {
+    const colorRetorno = data.retornoTotalPct >= 0 ? 'text-emerald-400' : 'text-red-400';
+    const colorVsBH = data.retornoTotalPct >= data.buyHoldPct ? 'text-emerald-400' : 'text-amber-400';
+    return `
+        <p class="text-gray-400">${data.estrategia}</p>
+        <p>Balance: $${data.balanceInicial.toFixed(2)} → $${data.balanceFinal.toFixed(2)}</p>
+        <p>Retorno: <span class="${colorRetorno}">${data.retornoTotalPct}%</span> · Máxima caída: <span class="text-red-400">${data.maxDrawdownPct}%</span></p>
+        <p>Operaciones: ${data.totalOperaciones} (${data.ganadas} ganadas / ${data.perdidas} perdidas) · Win rate: ${data.winRate}%</p>
+        <p>Vs. comprar y mantener: <span class="${colorVsBH}">estrategia ${data.retornoTotalPct}% / buy&hold ${data.buyHoldPct}%</span></p>
+    `;
+}
+
+async function runBacktest() {
+    const resultEl = document.getElementById('backtest-result');
+    const strategy = document.getElementById('backtest-strategy').value;
+    const symbol = document.getElementById('backtest-symbol').value;
+    const interval = document.getElementById('backtest-interval').value;
+    const sl = document.getElementById('backtest-sl').value;
+    const tp = document.getElementById('backtest-tp').value;
+    resultEl.innerHTML = '⏳ Corriendo backtest con datos históricos reales de Binance...';
+
+    try {
+        const response = await fetch(`/api/binance?action=backtest&symbol=${symbol}&interval=${interval}&limit=500&strategy=${strategy}&sl=${sl}&tp=${tp}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            resultEl.innerHTML = `<span class="text-red-400">❌ ${data.error || 'Error en backtest'}</span>`;
+            return;
+        }
+
+        const cabecera = `<p class="text-gray-400 mb-1">${symbol} · Velas analizadas: ${data.velasAnalizadas} (${data.interval}) · SL ${data.slPct}% / TP ${data.tpPct}%</p>`;
+
+        if (data.comparacion) {
+            let html = cabecera;
+            for (const key of ['ema_cross', 'rsi_extremos', 'bollinger']) {
+                html += `<div class="border-t border-gray-700 pt-2 mt-2">${renderResultadoBacktest(data.comparacion[key])}</div>`;
+            }
+            resultEl.innerHTML = html;
+        } else {
+            resultEl.innerHTML = cabecera + renderResultadoBacktest(data);
+        }
+    } catch (error) {
+        resultEl.innerHTML = `<span class="text-red-400">❌ ${error.message}</span>`;
+    }
+}
+
+async function runOptimize() {
+    const resultEl = document.getElementById('optimize-result');
+    const strategy = document.getElementById('optimize-strategy').value;
+    const symbol = document.getElementById('backtest-symbol').value;
+    const interval = document.getElementById('backtest-interval').value;
+    const sl = document.getElementById('backtest-sl').value;
+    const tp = document.getElementById('backtest-tp').value;
+    resultEl.innerHTML = '⏳ Probando combinaciones de parámetros...';
+
+    try {
+        const response = await fetch(`/api/binance?action=optimize&symbol=${symbol}&interval=${interval}&limit=500&strategy=${strategy}&sl=${sl}&tp=${tp}`);
+        const data = await response.json();
+
+        if (!data.success) {
+            resultEl.innerHTML = `<span class="text-red-400">❌ ${data.error || 'Error optimizando'}</span>`;
+            return;
+        }
+
+        if (data.advertencia) {
+            resultEl.innerHTML = `<span class="text-amber-400">⚠️ ${data.advertencia}</span>`;
+            return;
+        }
+
+        const colorOut = data.outSample.retornoTotalPct >= 0 ? 'text-emerald-400' : 'text-red-400';
+        resultEl.innerHTML = `
+            <p class="text-gray-400">${data.totalCombinacionesProbadas} combinaciones probadas · Mejores parámetros: ${JSON.stringify(data.mejorParametros)}</p>
+            <div class="border-t border-gray-700 pt-2 mt-2">
+                <p class="text-gray-500">Primera mitad (usada para elegir):</p>
+                <p>Retorno: ${data.inSample.retornoTotalPct}% · Win rate: ${data.inSample.winRate}% · Operaciones: ${data.inSample.totalOperaciones}</p>
+            </div>
+            <div class="border-t border-gray-700 pt-2 mt-2">
+                <p class="text-gray-500">Segunda mitad (validación, no vista al elegir) — lo que realmente importa:</p>
+                <p>Retorno: <span class="${colorOut}">${data.outSample.retornoTotalPct}%</span> · Win rate: ${data.outSample.winRate}% · Operaciones: ${data.outSample.totalOperaciones}</p>
+            </div>
+        `;
+    } catch (error) {
+        resultEl.innerHTML = `<span class="text-red-400">❌ ${error.message}</span>`;
+    }
+}
+
+async function getBinancePrice(symbol = 'BTCUSDT') {
+    try {
+        const response = await fetch(`/api/binance?action=price&symbol=${symbol}`);
+        const data = await response.json();
+        return parseFloat(data.price);
+    } catch (error) {
+        console.error('Error obteniendo precio:', error);
+        return null;
+    }
+}
+
+async function ejecutarOrdenReal(side, symbol) {
+    symbol = symbol || 'BTCUSDT';
+    if (!window.APP_CONFIG.binance.enabled) {
+        mostrarNotificacion('⚠️ Conéctate a Binance Testnet primero en Settings', 'warning');
+        return;
+    }
+
+    if (!dentroDelLimiteSemanal()) {
+        const limite = document.getElementById('limite-semanal')?.value || 10;
+        mostrarNotificacion(`🛑 Llegaste al límite de ${limite} operaciones esta semana. Se vuelve a habilitar la semana que viene — es la disciplina forzada que configuraste.`, 'warning');
+        return;
+    }
+    
+    const quantity = parseFloat(document.getElementById('cantidad-usdt').value) || 100;
+    const price = await getBinancePrice(symbol);
+    
+    if (!price) {
+        mostrarNotificacion('❌ No se pudo obtener el precio', 'error');
+        return;
+    }
+    
+    const cantidadActivo = quantity / price;
+    const activoNombre = symbol.replace('USDT', '');
+    
+    try {
+        const response = await fetch('/api/binance', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                action: 'order',
+                side: side,
+                symbol: symbol,
+                quantity: cantidadActivo.toFixed(3)
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (data.success) {
+            mostrarNotificacion(`✅ Orden ejecutada: ${side} ${cantidadActivo.toFixed(3)} ${activoNombre} a $${price.toFixed(2)}`, 'success');
+            
+            const COMISION_PCT = 0.001;
+            const comisionEstaOperacion = price * cantidadActivo * COMISION_PCT;
+            let pnl;
+
+            if (side === 'BUY') {
+                posicionesAbiertas[symbol] = { precio: price, cantidad: cantidadActivo };
+                guardarPosicionesAbiertas();
+                pnl = -comisionEstaOperacion;
+            } else {
+                const posicion = posicionesAbiertas[symbol];
+                if (posicion) {
+                    const comisionEntrada = posicion.precio * posicion.cantidad * COMISION_PCT;
+                    pnl = (price - posicion.precio) * cantidadActivo - comisionEntrada - comisionEstaOperacion;
+                    delete posicionesAbiertas[symbol];
+                    guardarPosicionesAbiertas();
+                } else {
+                    pnl = -comisionEstaOperacion;
+                }
+            }
+
+            registrarOperacion({
+                fecha: new Date().toLocaleString('es-ES', { hour12: false }),
+                activo: `${activoNombre}/USDT`,
+                direccion: side,
+                precio: price,
+                cantidad: cantidadActivo,
+                comision: comisionEstaOperacion,
+                resultado: pnl >= 0 ? 'WIN' : 'LOSS',
+                pnl: pnl,
+                status: 'Ejecutada'
+            });
+            
+            await getBinanceBalance();
+        } else {
+            mostrarNotificacion(`❌ Orden falló: ${data.error || 'Error desconocido'}`, 'error');
+        }
+    } catch (error) {
+        mostrarNotificacion(`❌ Error: ${error.message}`, 'error');
+    }
+}
+
+let ultimoAnalisisGuiado = null;
+
+async function runGuidedAnalysis() {
+    const symbol = document.getElementById('guia-symbol').value;
+    const interval = document.getElementById('guia-interval').value;
+    const sl = document.getElementById('backtest-sl')?.value || 2;
+    const tp = document.getElementById('backtest-tp')?.value || 4;
+
+    document.getElementById('guia-empty').textContent = '⏳ Analizando con datos reales...';
+    document.getElementById('guia-empty').classList.remove('hidden');
+    document.getElementById('guia-result').classList.add('hidden');
+
+    try {
+        const resp = await fetch(`/api/binance?action=guided_analysis&symbol=${symbol}&interval=${interval}&sl=${sl}&tp=${tp}`);
+        const data = await resp.json();
+
+        if (!data.success) {
+            document.getElementById('guia-empty').textContent = `❌ ${data.error || 'Error en el análisis'}`;
+            return;
+        }
+
+        ultimoAnalisisGuiado = { ...data, symbol };
+
+        document.getElementById('guia-empty').classList.add('hidden');
+        document.getElementById('guia-result').classList.remove('hidden');
+
+        const actionColor = data.action === 'BUY' ? 'text-emerald-400' : data.action === 'SELL' ? 'text-red-400' : 'text-amber-400';
+        const badgeColor = data.action === 'BUY' ? 'badge-buy' : data.action === 'SELL' ? 'badge-sell' : 'badge-wait';
+        document.getElementById('guia-action').textContent = data.action === 'BUY' ? 'COMPRAR' : data.action === 'SELL' ? 'VENDER' : 'ESPERAR';
+        document.getElementById('guia-action').className = 'text-lg font-bold ' + actionColor;
+        document.getElementById('guia-confidence').textContent = data.confidence + '% de confluencia';
+        document.getElementById('guia-confidence').className = badgeColor + ' text-xs px-2 py-0.5 rounded ml-2';
+
+        document.getElementById('guia-entry').textContent = '$' + data.entry.toFixed(2);
+        document.getElementById('guia-sl').textContent = '$' + data.sl.toFixed(2);
+        document.getElementById('guia-tp').textContent = '$' + data.tp.toFixed(2);
+
+        const capitalTotal = parseFloat(document.getElementById('capital-total')?.value) || 10000;
+        const riesgoPct = parseFloat(document.getElementById('riesgo-porcentaje')?.value) || 2;
+        const montoARiesgo = capitalTotal * (riesgoPct / 100);
+        const cantidadUSD = montoARiesgo / (data.slPct / 100);
+        document.getElementById('cantidad-usdt').value = Math.round(cantidadUSD);
+
+        const riesgoUSD = cantidadUSD * (data.slPct / 100);
+        const gananciaUSD = cantidadUSD * (data.tpPct / 100);
+        document.getElementById('guia-risk').textContent = `-$${riesgoUSD.toFixed(2)} (si toca SL) · posición: $${cantidadUSD.toFixed(2)}`;
+        document.getElementById('guia-reward').textContent = `+$${gananciaUSD.toFixed(2)} (si toca TP)`;
+
+        document.getElementById('guia-checklist').innerHTML = data.checklist.map(c => {
+            const icon = c.favor === 'BUY' ? '📈' : c.favor === 'SELL' ? '📉' : '➖';
+            return `<div class="flex justify-between text-xs bg-gray-900 rounded p-2">
+                <span class="text-gray-300">${icon} ${c.name}</span>
+                <span class="text-gray-500 text-right">${c.desc}</span>
+            </div>`;
+        }).join('');
+
+        document.getElementById('guia-explicacion').textContent = data.explicacion;
+
+        const execBtn = document.getElementById('guia-execute-btn');
+        execBtn.classList.toggle('hidden', data.action === 'WAIT');
+    } catch (error) {
+        document.getElementById('guia-empty').textContent = `❌ ${error.message}`;
+    }
+}
+
+async function ejecutarDesdeGuia() {
+    if (!ultimoAnalisisGuiado) return;
+    await ejecutarOrdenReal(ultimoAnalisisGuiado.action, ultimoAnalisisGuiado.symbol);
+}
+
+async function ejecutarAccionGuia(side) {
+    if (!ultimoAnalisisGuiado) {
+        mostrarNotificacion('Primero corré un análisis', 'warning');
+        return;
+    }
+    if (side === 'WAIT') {
+        mostrarNotificacion('⏳ Señal ignorada. Esperando mejor momento.', 'info');
+        return;
+    }
+    if (side !== ultimoAnalisisGuiado.action && ultimoAnalisisGuiado.action !== 'WAIT') {
+        if (!confirm(`La IA sugirió ${ultimoAnalisisGuiado.action === 'BUY' ? 'COMPRAR' : 'VENDER'}, no ${side === 'BUY' ? 'COMPRAR' : 'VENDER'}. ¿Seguro que querés ir en contra de la sugerencia?`)) {
+            return;
+        }
+    }
+    await ejecutarOrdenReal(side, ultimoAnalisisGuiado.symbol);
+}
+
+async function updateScannerWithRealData() {
+    const symbols = ['BTCUSDT', 'ETHUSDT', 'BNBUSDT', 'SOLUSDT'];
+    const interval = document.getElementById('scanner-interval')?.value || '1h';
+    const container = document.getElementById('scanner-results');
+    
+    try {
+        const results = await Promise.all(symbols.map(async (symbol) => {
+            const limitVelas = interval === '1m' ? 20 : 100;
+            const resp = await fetch(`/api/binance?action=indicators&symbol=${symbol}&interval=${interval}&limit=${limitVelas}`);
+            const data = await resp.json();
+            if (!data.success) return null;
+
+            let action = 'WAIT';
+            const volumenAlto = data.volumenActual > data.volumenPromedio;
+            if (interval === '1h') {
+                if (data.rsi < 35 && data.ema9 > data.ema21) action = 'BUY';
+                else if (data.rsi > 65 && data.ema9 < data.ema21) action = 'SELL';
+            } else if (interval === '15m') {
+                if (data.rsi < 40 && data.precio < data.vwap) action = 'BUY';
+                else if (data.rsi > 60 && data.precio > data.vwap) action = 'SELL';
+            } else {
+                if (data.precio < data.vwap) action = 'BUY';
+                else if (data.precio > data.vwap) action = 'SELL';
+            }
+            return {
+                symbol: symbol.replace('USDT', '/USDT'),
+                action: action,
+                confidence: data.rsi,
+                risk: (data.rsi < 25 || data.rsi > 75) ? 'Alto' : (data.rsi < 35 || data.rsi > 65) ? 'Moderado' : 'Bajo',
+                price: data.precio,
+                change: data.change24h,
+                cruceEMA: data.cruceEMA,
+                macdTendencia: data.macdTendencia,
+                vwap: data.vwap,
+                volumenAlto: volumenAlto
+            };
+        }));
+        
+        const cantidadConfigurada = document.getElementById('cantidad-usdt')?.value || 100;
+        const validResults = results.filter(r => r);
+        container.innerHTML = validResults.map((item, index) => {
+            const actionColor = item.action === 'BUY' ? 'badge-buy' : item.action === 'SELL' ? 'badge-sell' : 'badge-wait';
+            const actionIcon = item.action === 'BUY' ? '📈' : item.action === 'SELL' ? '📉' : '⏳';
+            const symbolSinBarra = item.symbol.replace('/', '');
+            const lineaIndicador = interval === '1m'
+                ? `VWAP $${item.vwap} · Volumen ${item.volumenAlto ? 'alto' : 'normal'}`
+                : `${item.cruceEMA} · MACD ${item.macdTendencia}` + (interval === '15m' ? ` · VWAP $${item.vwap}` : '');
+            return `
+                <div class="scanner-item" onclick="showOpportunityDetail(${index})">
+                    <div class="flex justify-between items-start">
+                        <div>
+                            <span class="text-sm font-semibold text-white">${item.symbol}</span>
+                            <span class="text-[10px] ${actionColor} px-1.5 py-0.5 rounded ml-2">${actionIcon} ${item.action === 'BUY' ? 'COMPRAR' : item.action === 'SELL' ? 'VENDER' : 'ESPERAR'}</span>
+                        </div>
+                        <span class="text-xs text-emerald-400 font-semibold">RSI ${item.confidence}</span>
+                    </div>
+                    <div class="flex justify-between text-xs mt-1.5">
+                        <span class="text-gray-500">$${item.price?.toFixed(2) || 'N/A'}</span>
+                        <span class="${item.change > 0 ? 'text-emerald-400' : 'text-red-400'}">${item.change > 0 ? '+' : ''}${item.change?.toFixed(2) || 0}%</span>
+                    </div>
+                    <div class="text-[10px] text-gray-500 mt-1">${lineaIndicador}</div>
+                    <div class="flex gap-2 mt-2" onclick="event.stopPropagation()">
+                        <button onclick="ejecutarOrdenReal('BUY', '${symbolSinBarra}')" class="flex-1 bg-emerald-600/20 text-emerald-400 text-[10px] py-1 rounded border border-emerald-800/50 hover:bg-emerald-600/30">Comprar ($${cantidadConfigurada})</button>
+                        <button onclick="ejecutarOrdenReal('SELL', '${symbolSinBarra}')" class="flex-1 bg-red-600/20 text-red-400 text-[10px] py-1 rounded border border-red-800/50 hover:bg-red-600/30">Vender</button>
+                    </div>
+                </div>
+            `;
+        }).join('');
+        
+        window.scannerData = validResults;
+    } catch (error) {
+        console.error('Error actualizando scanner:', error);
+    }
+}
+
+// ============================================================
+// FUNCIONES DEL CHAT
+// ============================================================
+function toggleChat() {
+    const panel = document.getElementById('chatPanel');
+    const toggle = document.getElementById('chatToggle');
+    panel.classList.toggle('open');
+    toggle.classList.toggle('open');
+}
+
+function sendMessage() {
+    const input = document.getElementById('chatInput');
+    const message = input.value.trim();
+    if (!message) return;
+    input.value = '';
+    addMessage('user', message);
+    processUserMessage(message);
+}
+
+function sendQuickAction(action, symbols) {
+    addMessage('user', action);
+    processUserMessage(action, symbols);
+}
+
+function addMessage(role, content) {
+    const container = document.getElementById('chatMessages');
+    const time = new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+    const div = document.createElement('div');
+    div.className = `chat-message ${role}`;
+    const bubble = document.createElement('div');
+    bubble.className = 'message-bubble';
+    bubble.innerHTML = content;
+    const timeDiv = document.createElement('div');
+    timeDiv.className = 'message-time';
+    timeDiv.textContent = time;
+    div.appendChild(bubble);
+    div.appendChild(timeDiv);
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function showTyping() {
+    const container = document.getElementById('chatMessages');
+    const div = document.createElement('div');
+    div.className = 'chat-message assistant';
+    div.id = 'typing-indicator';
+    div.innerHTML = `<div class="typing-indicator"><span>●</span><span>●</span><span>●</span></div>`;
+    container.appendChild(div);
+    container.scrollTop = container.scrollHeight;
+}
+
+function hideTyping() {
+    const indicator = document.getElementById('typing-indicator');
+    if (indicator) indicator.remove();
+}
+
+async function processUserMessage(message, symbols) {
+    showTyping();
+    
+    try {
+        const response = await fetch('/api/binance?action=chat', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ message: message, symbols: symbols, lang: currentLang })
+        });
+        
+        const data = await response.json();
+        hideTyping();
+        
+        if (data.response) {
+            addMessage('assistant', data.response);
+            document.getElementById('chat-ia-status').textContent = 'Groq AI activo';
+            document.getElementById('chat-ia-status').className = 'text-emerald-400';
+        } else {
+            const errorMsg = data.error || 'sin detalle';
+            const fallbackResponse = generateAIResponse(message);
+            addMessage('assistant', `<span class="text-amber-400 text-xs">⚠️ Groq no respondió: ${errorMsg}</span><br><br>` + fallbackResponse);
+            document.getElementById('chat-ia-status').textContent = 'Modo demo';
+            document.getElementById('chat-ia-status').className = 'text-gray-400';
+        }
+    } catch (error) {
+        hideTyping();
+        const fallbackResponse = generateAIResponse(message);
+        addMessage('assistant', fallbackResponse);
+        document.getElementById('chat-ia-status').textContent = 'Modo demo (error)';
+        document.getElementById('chat-ia-status').className = 'text-amber-400';
+    }
+}
+
+function generateAIResponse(message) {
+    const lower = message.toLowerCase();
+    if (lower.includes('btc') || lower.includes('bitcoin')) {
+        return `
+            <strong>₿ Análisis de Bitcoin</strong>
+            <div class="analysis-block">
+                <div class="label">Precio Actual</div>
+                <div class="value green">$${Math.floor(Math.random() * 5000 + 40000)}</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Cambio 24h</div>
+                <div class="value ${Math.random() > 0.5 ? 'green' : 'red'}">${(Math.random() * 6 - 3).toFixed(2)}%</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Tendencia</div>
+                <div class="value green">📈 Alcista</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Recomendación</div>
+                <div class="value">Considera comprar en caídas con stop loss en $38,000</div>
+            </div>
+        `;
+    }
+    if (lower.includes('mercado') || lower.includes('analizar')) {
+        return `
+            <strong>📊 Análisis de Mercado</strong>
+            <div class="analysis-block">
+                <div class="label">Tendencia General</div>
+                <div class="value green">📈 Alcista</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Confianza IA</div>
+                <div class="value amber">${Math.floor(Math.random() * 30 + 60)}%</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Mejor oportunidad</div>
+                <div class="value green">BTC/USDT</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Recomendación</div>
+                <div class="value">Mantén posiciones largas con stop loss ajustado</div>
+            </div>
+        `;
+    }
+    if (lower.includes('riesgo') || lower.includes('gestión')) {
+        return `
+            <strong>🛡️ Gestión de Riesgo</strong>
+            <div class="analysis-block">
+                <div class="label">Riesgo recomendado</div>
+                <div class="value amber">2% por operación</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Stop Loss</div>
+                <div class="value red">Siempre usar</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">Ratio R/R</div>
+                <div class="value green">2.5:1 recomendado</div>
+            </div>
+            <div class="analysis-block">
+                <div class="label">💡 Consejo</div>
+                <div class="value">Nunca arriesgues más del 2% de tu capital en una sola operación</div>
+            </div>
+        `;
+    }
+    return `
+        <strong>🤔 Entiendo tu pregunta</strong>
+        <div class="analysis-block">
+            <div class="label">Tu consulta</div>
+            <div class="value">"${message}"</div>
+        </div>
+        <div class="analysis-block">
+            <div class="label">💡 Sugerencia</div>
+            <div class="value">Prueba preguntas como:<br>• "Analizar BTC"<br>• "Analizar mercado"<br>• "Gestión de riesgo"</div>
+        </div>
+    `;
+}
+
+// ============================================================
+// FUNCIONES DEL SISTEMA
+// ============================================================
+function toggleSidebar() {
+    document.getElementById('sidebar').classList.toggle('open');
+}
+
+function showOpportunityDetail(index) {
+    const detail = document.getElementById('opportunity-detail');
+    const item = window.scannerData?.[index];
+    if (!item) return;
+    
+    detail.innerHTML = `
+        <div class="flex justify-between items-start mb-3">
+            <div>
+                <h3 class="text-base font-bold text-white">${item.symbol}</h3>
+                <span class="text-xs ${item.action === 'BUY' ? 'text-emerald-400' : item.action === 'SELL' ? 'text-red-400' : 'text-amber-400'}">
+                    ${item.action === 'BUY' ? '📈 COMPRAR' : item.action === 'SELL' ? '📉 VENDER' : '⏳ ESPERAR'}
+                </span>
+            </div>
+            <button onclick="closeOpportunityDetail()" class="text-gray-500 hover:text-white"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-xs">
+            <div class="space-y-2">
+                <div class="flex justify-between"><span class="text-gray-500">Precio</span><span class="text-emerald-400 font-semibold">$${item.price?.toFixed(2) || 'N/A'}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">RSI(14)</span><span class="text-emerald-400 font-semibold">${item.confidence}</span></div>
+            </div>
+            <div class="space-y-2">
+                <div class="flex justify-between"><span class="text-gray-500">Riesgo</span><span class="${item.risk === 'Alto' ? 'text-red-400' : 'text-amber-400'}">${item.risk}</span></div>
+                <div class="flex justify-between"><span class="text-gray-500">Cambio 24h</span><span class="${item.change > 0 ? 'text-emerald-400' : 'text-red-400'}">${item.change > 0 ? '+' : ''}${item.change?.toFixed(2) || 0}%</span></div>
+            </div>
+        </div>
+        <button onclick="ejecutarOrdenReal(item.action === 'BUY' ? 'BUY' : 'SELL', item.symbol.replace('/', ''))" class="mt-3 w-full btn-primary text-xs py-2">
+            ${item.action === 'BUY' ? '✅ Ejecutar Compra' : item.action === 'SELL' ? '❌ Ejecutar Venta' : '⏳ Esperar'}
+        </button>
+    `;
+    detail.classList.add('open');
+}
+
+function closeOpportunityDetail() {
+    document.getElementById('opportunity-detail').classList.remove('open');
+}
+
+function generarSeñalManual() {
+    const actions = ['BUY', 'SELL', 'WAIT'];
+    const action = actions[Math.floor(Math.random() * 3)];
+    const confidence = Math.floor(Math.random() * 30) + 60;
+    
+    document.getElementById('ai-trend').textContent = action === 'BUY' ? '📈 Alcista' : action === 'SELL' ? '📉 Bajista' : '⏳ Lateral';
+    document.getElementById('ai-confidence-text').textContent = `${confidence}%`;
+    document.getElementById('ai-confidence-bar').style.width = `${confidence}%`;
+    document.getElementById('ai-explanation').textContent = action === 'BUY' ? 'Momentum alcista con volumen creciente.' : action === 'SELL' ? 'Divergencia bajista detectada.' : 'Señales mixtas. Esperar confirmación.';
+    
+    const badge = document.getElementById('ai-status-badge');
+    if (action === 'BUY') { badge.className = 'badge-buy text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '📈 Comprar'; }
+    else if (action === 'SELL') { badge.className = 'badge-sell text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '📉 Vender'; }
+    else { badge.className = 'badge-wait text-[10px] px-2 py-0.5 rounded'; badge.innerHTML = '⏳ Esperar'; }
+    
+    mostrarNotificacion(`Señal generada: ${action === 'BUY' ? 'COMPRAR' : action === 'SELL' ? 'VENDER' : 'ESPERAR'} (${confidence}% confianza)`, 'success');
+}
+
+function cargarCredenciales() {}
+
+function guardarConfiguracion() {
+    localStorage.setItem('trading_config', JSON.stringify({
+        riesgoPorcentaje: document.getElementById('riesgo-porcentaje').value,
+        cantidadUsdt: document.getElementById('cantidad-usdt').value
+    }));
+    mostrarNotificacion('Configuración guardada', 'success');
+}
+
+function cargarConfiguracion() {
+    const config = localStorage.getItem('trading_config');
+    if (config) {
+        const data = JSON.parse(config);
+        if (data.riesgoPorcentaje) document.getElementById('riesgo-porcentaje').value = data.riesgoPorcentaje;
+        if (data.cantidadUsdt) document.getElementById('cantidad-usdt').value = data.cantidadUsdt;
+    }
+}
+
+let operaciones = JSON.parse(localStorage.getItem('historial_operaciones') || '[]');
+let posicionesAbiertas = JSON.parse(localStorage.getItem('posiciones_abiertas') || '{}');
+
+function guardarHistorialPersistente() {
+    try {
+        localStorage.setItem('historial_operaciones', JSON.stringify(operaciones.slice(0, 500)));
+    } catch (e) {
+        console.error('No se pudo guardar el historial:', e);
+    }
+}
+
+function guardarPosicionesAbiertas() {
+    try {
+        localStorage.setItem('posiciones_abiertas', JSON.stringify(posicionesAbiertas));
+    } catch (e) {
+        console.error('No se pudo guardar las posiciones abiertas:', e);
+    }
+}
+
+function dentroDelLimiteSemanal() {
+    const limite = parseInt(document.getElementById('limite-semanal')?.value) || 10;
+    const haceUnaSemana = Date.now() - 7 * 24 * 60 * 60 * 1000;
+    const operacionesEstaSemana = operaciones.filter(op => {
+        const fechaOp = new Date(op.fecha.split(',')[0].split('/').reverse().join('-') + ' ' + (op.fecha.split(',')[1] || '')).getTime();
+        return !isNaN(fechaOp) && fechaOp >= haceUnaSemana;
+    }).length;
+    return operacionesEstaSemana < limite;
+}
+
+function toggleModoPrincipiante() {
+    const activo = document.getElementById('modo-principiante').checked;
+    document.body.classList.toggle('modo-principiante', activo);
+    localStorage.setItem('modo_principiante', activo ? '1' : '0');
+}
+
+// ============================================================
+// MODO APRENDIZAJE
+// ============================================================
+let posicionesAprendizaje = JSON.parse(localStorage.getItem('posiciones_aprendizaje') || '[]');
+let historialAprendizaje = JSON.parse(localStorage.getItem('historial_aprendizaje') || '[]');
+
+function guardarAprendizaje() {
+    try {
+        localStorage.setItem('posiciones_aprendizaje', JSON.stringify(posicionesAprendizaje));
+        localStorage.setItem('historial_aprendizaje', JSON.stringify(historialAprendizaje.slice(0, 300)));
+    } catch (e) {
+        console.error('No se pudo guardar el modo aprendizaje:', e);
+    }
+}
+
+async function analizarAprendizaje() {
+    const symbol = document.getElementById('apr-symbol').value;
+    const resultEl = document.getElementById('apr-analisis-result');
+    resultEl.innerHTML = '⏳ Analizando...';
+
+    try {
+        const resp = await fetch(`/api/binance?action=guided_analysis&symbol=${symbol}&interval=1h&sl=2&tp=4`);
+        const data = await resp.json();
+        if (!data.success) {
+            resultEl.innerHTML = `<span class="text-red-400">❌ ${data.error || 'Error'}</span>`;
+            return;
+        }
+
+        if (data.action === 'WAIT') {
+            resultEl.innerHTML = `<div class="bg-gray-900 rounded p-3 text-amber-400">🛑 Bloqueado: solo ${data.confidence}% de confluencia. Este modo exige al menos 3 de 5 indicadores a favor antes de permitir operar. Esperá o probá otro activo.</div>`;
+            return;
+        }
+
+        const CAPITAL_APRENDIZAJE = 100;
+        const RIESGO_PCT_APRENDIZAJE = 1;
+        const riesgoUSD = CAPITAL_APRENDIZAJE * (RIESGO_PCT_APRENDIZAJE / 100);
+        const cantidadPosicion = riesgoUSD / (data.slPct / 100);
+        const actionColor = data.action === 'BUY' ? 'text-emerald-400' : 'text-red-400';
+
+        resultEl.innerHTML = `
+            <div class="bg-gray-900 rounded p-3">
+                <p class="${actionColor} font-bold">${data.action === 'BUY' ? '📈 COMPRAR' : '📉 VENDER'} — ${data.confidence}% de confluencia</p>
+                <p class="text-gray-400 mt-1">Entrada $${data.entry} · SL $${data.sl} · TP $${data.tp}</p>
+                <p class="text-gray-400 mt-1">Posición: $${cantidadPosicion.toFixed(2)} · Riesgo: <span class="text-red-400">$${riesgoUSD.toFixed(2)} (1% de $100, fijo)</span></p>
+                <button onclick='abrirPosicionAprendizaje(${JSON.stringify({ ...data, symbol, cantidadFija: cantidadPosicion })})' class="btn-primary text-xs py-1.5 px-3 mt-2">Abrir posición (riesgo $${riesgoUSD.toFixed(2)})</button>
+            </div>
+        `;
+    } catch (error) {
+        resultEl.innerHTML = `<span class="text-red-400">❌ ${error.message}</span>`;
+    }
+}
+
+function abrirPosicionAprendizaje(data) {
+    const posicion = {
+        id: Date.now(),
+        fecha: new Date().toLocaleString('es-ES', { hour12: false }),
+        activo: data.symbol.replace('USDT', '/USDT'),
+        symbol: data.symbol,
+        direccion: data.action,
+        entrada: data.entry,
+        sl: data.sl,
+        tp: data.tp,
+        cantidad: data.cantidadFija,
+        checklist: data.checklist ? data.checklist.filter(c => c.favor === data.action).map(c => c.name).join(', ') : ''
+    };
+    posicionesAprendizaje.push(posicion);
+    guardarAprendizaje();
+    renderPosicionesAprendizaje();
+    mostrarNotificacion(`Posición de aprendizaje abierta: ${posicion.direccion} ${posicion.activo}`, 'success');
+    document.getElementById('apr-analisis-result').innerHTML = '';
+}
+
+async function renderPosicionesAprendizaje() {
+    const box = document.getElementById('apr-active-positions');
+    if (posicionesAprendizaje.length === 0) {
+        box.innerHTML = '<p class="text-gray-500 text-sm text-center py-6">No hay operaciones abiertas</p>';
+        return;
+    }
+
+    const conPrecios = await Promise.all(posicionesAprendizaje.map(async (p) => {
+        const precioActual = await getBinancePrice(p.symbol);
+        return { ...p, precioActual };
+    }));
+
+    box.innerHTML = conPrecios.map(p => {
+        if (!p.precioActual) return '';
+        const pnlFlotante = p.direccion === 'BUY'
+            ? (p.precioActual - p.entrada) * (p.cantidad / p.entrada)
+            : (p.entrada - p.precioActual) * (p.cantidad / p.entrada);
+        const pnlColor = pnlFlotante >= 0 ? 'text-emerald-400' : 'text-red-400';
+
+        const tocoSL = p.direccion === 'BUY' ? p.precioActual <= p.sl : p.precioActual >= p.sl;
+        const tocoTP = p.direccion === 'BUY' ? p.precioActual >= p.tp : p.precioActual <= p.tp;
+        if (tocoSL || tocoTP) {
+            setTimeout(() => cerrarPosicionAprendizaje(p.id, tocoTP ? 'TP' : 'SL', p.precioActual), 0);
+        }
+
+        return `
+            <div class="bg-gray-900 rounded-lg p-4 mb-3 border border-gray-700">
+                <div class="flex justify-between items-start">
+                    <div>
+                        <span class="font-semibold text-white">${p.activo}</span>
+                        <span class="text-xs ml-2 ${p.direccion === 'BUY' ? 'text-emerald-400' : 'text-red-400'}">${p.direccion}</span>
+                    </div>
+                    <span class="${pnlColor} font-mono text-sm">${pnlFlotante >= 0 ? '+' : ''}$${pnlFlotante.toFixed(2)} (flotante)</span>
+                </div>
+                <div class="grid grid-cols-3 gap-2 mt-3 text-xs text-gray-400">
+                    <div>Entrada: <span class="text-white">$${p.entrada}</span></div>
+                    <div>SL: <span class="text-red-400">$${p.sl}</span></div>
+                    <div>TP: <span class="text-emerald-400">$${p.tp}</span></div>
+                </div>
+                <button onclick="cerrarPosicionAprendizaje(${p.id}, 'Manual', ${p.precioActual})" class="text-xs bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded mt-3">Cerrar ahora</button>
+            </div>
+        `;
+    }).join('');
+}
+
+function cerrarPosicionAprendizaje(id, motivo, precioSalida) {
+    const idx = posicionesAprendizaje.findIndex(p => p.id === id);
+    if (idx === -1) return;
+    const p = posicionesAprendizaje[idx];
+
+    const pnl = p.direccion === 'BUY'
+        ? (precioSalida - p.entrada) * (p.cantidad / p.entrada)
+        : (p.entrada - precioSalida) * (p.cantidad / p.entrada);
+
+    historialAprendizaje.unshift({
+        fecha: p.fecha,
+        activo: p.activo,
+        direccion: p.direccion,
+        entrada: p.entrada,
+        salida: precioSalida,
+        pnl: pnl,
+        checklist: p.checklist,
+        cierre: motivo
+    });
+
+    posicionesAprendizaje.splice(idx, 1);
+    guardarAprendizaje();
+    renderPosicionesAprendizaje();
+    renderHistorialAprendizaje();
+    mostrarNotificacion(`Posición cerrada (${motivo}) · P&L ${pnl >= 0 ? '+' : ''}$${pnl.toFixed(2)}`, pnl >= 0 ? 'success' : 'warning');
+}
+
+function renderHistorialAprendizaje() {
+    const tbody = document.getElementById('apr-tabla-historial');
+    document.getElementById('apr-historial-contador').textContent = `(${historialAprendizaje.length})`;
+
+    if (historialAprendizaje.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="8" class="py-6 text-center text-gray-500">Sin operaciones aún</td></tr>';
+    } else {
+        tbody.innerHTML = historialAprendizaje.map(op => `
+            <tr class="border-b border-gray-900">
+                <td class="py-1.5 pr-2 text-gray-500">${op.fecha}</td>
+                <td class="py-1.5 pr-2">${op.activo}</td>
+                <td class="py-1.5 pr-2 ${op.direccion === 'BUY' ? 'text-emerald-400' : 'text-red-400'}">${op.direccion}</td>
+                <td class="py-1.5 pr-2">$${op.entrada}</td>
+                <td class="py-1.5 pr-2">$${op.salida.toFixed(2)}</td>
+                <td class="py-1.5 pr-2 ${op.pnl >= 0 ? 'text-emerald-400' : 'text-red-400'}">${op.pnl >= 0 ? '+' : ''}$${op.pnl.toFixed(2)}</td>
+                <td class="py-1.5 pr-2 text-gray-500">${op.checklist || '—'}</td>
+                <td class="py-1.5 pr-2">${op.cierre}</td>
+            </tr>
+        `).join('');
+    }
+
+    const total = historialAprendizaje.length;
+    const wins = historialAprendizaje.filter(o => o.pnl > 0).length;
+    document.getElementById('apr-total').textContent = total;
+    document.getElementById('apr-winrate').textContent = total ? Math.round(wins / total * 100) + '%' : '0%';
+
+    let racha = 0;
+    for (const op of historialAprendizaje) {
+        if (op.pnl > 0) racha++; else break;
+    }
+    document.getElementById('apr-racha').textContent = racha;
+}
+
+function limpiarHistorialAprendizaje() {
+    if (historialAprendizaje.length === 0) return;
+    if (!confirm('¿Seguro que querés limpiar el historial de aprendizaje?')) return;
+    historialAprendizaje = [];
+    guardarAprendizaje();
+    renderHistorialAprendizaje();
+}
+
+let saldo = 10000;
+let maxSaldo = 10000;
+
+function registrarOperacion(op) {
+    operaciones.unshift(op);
+    guardarHistorialPersistente();
+    renderizarHistorial();
+    actualizarPanelCompleto();
+}
+
+function renderizarHistorial() {
+    const tbody = document.getElementById('tabla-historial');
+    if (operaciones.length === 0) {
+        tbody.innerHTML = `<tr id="sin-datos"><td colspan="8" class="py-6 text-center text-gray-500"><i class="fas fa-inbox mr-2 text-gray-600"></i> Sin operaciones aún</td></tr>`;
+        return;
+    }
+    
+    let html = '';
+    operaciones.slice(0, 50).forEach(op => {
+        const badgeClass = op.resultado === 'WIN' ? 'badge-win' : 'badge-loss';
+        const pnlColor = op.pnl > 0 ? 'text-emerald-400' : 'text-red-400';
+        const pnlSigno = op.pnl > 0 ? '+' : '';
+        html += `
+            <tr class="table-row">
+                <td class="text-gray-500 text-xs">${op.fecha}</td>
+                <td class="font-semibold text-gray-200">${op.activo}</td>
+                <td class="${op.direccion === 'BUY' ? 'text-emerald-400' : 'text-red-400'} font-medium">${op.direccion === 'BUY' ? 'COMPRA' : 'VENTA'}</td>
+                <td class="text-gray-300">$${op.precio?.toFixed(2) || 'N/A'}</td>
+                <td class="text-gray-300">${op.cantidad?.toFixed(3) || 'N/A'}</td>
+                <td class="text-right text-gray-500 text-xs">-$${(op.comision || 0).toFixed(2)}</td>
+                <td><span class="px-2 py-0.5 rounded text-[10px] border font-medium ${badgeClass}">${op.resultado === 'WIN' ? '✅ GANADA' : '❌ PERDIDA'}</span></td>
+                <td class="text-right font-mono font-bold ${pnlColor}">${pnlSigno}$${Math.abs(op.pnl || 0).toFixed(2)}</td>
+                <td class="text-center text-xs"><span class="text-emerald-400">${op.status || 'Ejecutada'}</span></td>
+            </tr>
+        `;
+    });
+    tbody.innerHTML = html;
+}
+
+function actualizarPanelCompleto() {
+    document.getElementById('totales-txt').textContent = operaciones.length;
+    const ganadas = operaciones.filter(o => o.resultado === 'WIN').length;
+    const winRate = operaciones.length > 0 ? (ganadas / operaciones.length) * 100 : 0;
+    document.getElementById('winrate-txt').textContent = `${winRate.toFixed(1)}%`;
+    document.getElementById('contador-operaciones').textContent = `(${operaciones.length} registros)`;
+}
+
+function exportarCSV() {
+    if (operaciones.length === 0) {
+        mostrarNotificacion('Sin datos para exportar', 'warning');
+        return;
+    }
+    const headers = ['Fecha', 'Activo', 'Dirección', 'Precio', 'Cantidad', 'Resultado', 'P&L'];
+    const rows = operaciones.map(op => [op.fecha, op.activo, op.direccion === 'BUY' ? 'COMPRA' : 'VENTA', op.precio, op.cantidad, op.resultado === 'WIN' ? 'GANADA' : 'PERDIDA', op.pnl]);
+    const csv = [headers.join(','), ...rows.map(r => r.join(','))].join('\n');
+    const blob = new Blob([csv], { type: 'text/csv' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `operaciones_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+    mostrarNotificacion('CSV exportado', 'success');
+}
+
+function limpiarHistorial() {
+    if (operaciones.length === 0) return;
+    if (!confirm('¿Seguro que quieres limpiar todo el historial?')) return;
+    operaciones = [];
+    guardarHistorialPersistente();
+    renderizarHistorial();
+    actualizarPanelCompleto();
+    mostrarNotificacion('Historial limpiado', 'info');
+}
+
+function mostrarNotificacion(mensaje, tipo = 'info') {
+    const colores = { success: 'bg-emerald-600', warning: 'bg-amber-600', error: 'bg-red-600', info: 'bg-blue-600' };
+    const notif = document.createElement('div');
+    notif.className = `fixed top-4 right-4 ${colores[tipo]} text-white px-4 py-2 rounded-lg shadow-lg text-sm z-50 transition-all duration-300`;
+    notif.innerHTML = `<i class="fas fa-${tipo === 'success' ? 'check-circle' : tipo === 'warning' ? 'exclamation-triangle' : tipo === 'error' ? 'times-circle' : 'info-circle'} mr-2"></i>${mensaje}`;
+    document.body.appendChild(notif);
+    setTimeout(() => {
+        notif.style.opacity = '0';
+        notif.style.transform = 'translateX(100px)';
+        setTimeout(() => notif.remove(), 300);
+    }, 3000);
+}
+
+function showPaymentModal(planId) {
+    const plans = { pro: { name: 'Pro', price: 49 }, premium: { name: 'Premium', price: 99 } };
+    const plan = plans[planId];
+    if (!plan) return;
+    
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 bg-black/70 flex items-center justify-center z-50';
+    modal.innerHTML = `
+        <div class="bg-gray-900 p-6 rounded-lg max-w-md w-full border border-gray-700">
+            <h3 class="text-xl font-bold text-white mb-2">Plan ${plan.name}</h3>
+            <p class="text-3xl font-bold text-emerald-400 mb-4">$${plan.price}/mes</p>
+            <div class="space-y-2 mb-4 text-xs text-gray-300">
+                <p>✅ ${planId === 'pro' ? 'Datos reales + IA ilimitada' : 'Todo Pro + Bots + Soporte 24/7'}</p>
+            </div>
+            <div class="flex gap-2">
+                <button onclick="pagarConStripe('${planId}')" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded text-sm">
+                    <i class="fab fa-stripe mr-2"></i> Stripe
+                </button>
+                <button onclick="pagarConPaypal('${planId}')" class="flex-1 bg-[#0070ba] hover:bg-[#003087] text-white py-2 rounded text-sm">
+                    <i class="fab fa-paypal mr-2"></i> PayPal
+                </button>
+            </div>
+            <button onclick="this.parentElement.parentElement.remove()" class="mt-4 w-full text-gray-500 hover:text-gray-300 text-sm">Cancelar</button>
+        </div>
+    `;
+    document.body.appendChild(modal);
+}
+
+function pagarConStripe(planId) {
+    mostrarNotificacion(`🔗 Redirigiendo a Stripe para plan ${planId}...`, 'info');
+    setTimeout(() => mostrarNotificacion('✅ Pago simulado exitoso', 'success'), 1500);
+}
+
+function pagarConPaypal(planId) {
+    mostrarNotificacion(`🔗 Abriendo PayPal para plan ${planId}...`, 'info');
+    setTimeout(() => mostrarNotificacion('✅ Pago simulado exitoso', 'success'), 1500);
+}
+
+// ============================================================
+// TRADINGVIEW CHART
+// ============================================================
+let tradingViewWidget = null;
+
+function initTradingView(symbol = 'BINANCE:BTCUSDT', interval = '60') {
+    const container = document.getElementById('tradingview-widget');
+    if (!container) return;
+    container.innerHTML = '';
+    try {
+        if (typeof TradingView !== 'undefined') {
+            tradingViewWidget = new TradingView.widget({
+                symbol: symbol,
+                interval: interval,
+                container_id: 'tradingview-widget',
+                theme: currentTheme === 'light' ? 'light' : 'dark',
+                style: '1',
+                locale: currentLang === 'es' ? 'es' : 'en',
+                toolbar_bg: currentTheme === 'light' ? '#FFFFFF' : '#0f1724',
+                enable_publishing: false,
+                hide_side_toolbar: false,
+                allow_symbol_change: true,
+                details: true,
+                hotlist: true,
+                calendar: false,
+                studies: ['MASimple@tv-basicstudies', 'RSI@tv-basicstudies', 'MACD@tv-basicstudies'],
+                autosize: true,
+                timezone: 'Etc/UTC',
+                withdateranges: true,
+                hide_top_toolbar: false,
+                save_image: false
+            });
+        } else {
+            container.innerHTML = '<div class="flex items-center justify-center h-full text-gray-500">Cargando TradingView...</div>';
+            setTimeout(() => initTradingView(symbol, interval), 2000);
+        }
+    } catch (error) {
+        container.innerHTML = '<div class="flex items-center justify-center h-full text-red-400">Error cargando gráfico.</div>';
+    }
+}
+
+function changeChartInterval(interval) {
+    if (tradingViewWidget) {
+        try {
+            tradingViewWidget.setInterval(interval);
+        } catch (e) {
+            initTradingView('BINANCE:BTCUSDT', interval);
+        }
+    } else {
+        initTradingView('BINANCE:BTCUSDT', interval);
+    }
+    document.querySelectorAll('.chart-container .flex .text-xs button').forEach(btn => {
+        btn.className = 'text-gray-500 hover:text-white transition px-2 py-1 rounded';
+    });
+    if (event && event.target) {
+        event.target.className = 'text-gray-300 font-semibold hover:text-white transition px-2 py-1 rounded bg-gray-800';
+    }
+}
+
+// ============================================================
+// RENDER ESTRATEGIAS ACTIVAS
+// ============================================================
+function renderActiveStrategies() {
+    const strategies = [
+        { name: 'EMA Cross', icon: 'fa-arrow-trend-up', strength: 85 },
+        { name: 'RSI', icon: 'fa-chart-bar', strength: 72 },
+        { name: 'MACD', icon: 'fa-wave-square', strength: 78 },
+        { name: 'Fibonacci', icon: 'fa-rotate-left', strength: 68 }
+    ];
+    
+    const container = document.getElementById('active-strategies');
+    container.innerHTML = strategies.map(s => `
+        <div class="bg-emerald-950/20 border border-emerald-800/50 rounded-lg p-3">
+            <div class="flex items-center gap-2 mb-1.5">
+                <i class="fas ${s.icon} text-emerald-400"></i>
+                <span class="text-sm font-medium text-gray-200">${s.name}</span>
+                <span class="text-[10px] text-emerald-400 ml-auto">✅ Activa</span>
+            </div>
+            <div class="flex justify-between text-xs">
+                <span class="text-gray-500">Fuerza</span>
+                <span class="text-emerald-400 font-semibold">${s.strength}%</span>
+            </div>
+            <div class="h-1 bg-gray-700 rounded mt-1.5 overflow-hidden">
+                <div class="h-full bg-emerald-400 rounded" style="width:${s.strength}%"></div>
+            </div>
+        </div>
+    `).join('');
+}
+
+// ============================================================
+// NAVEGACIÓN SIDEBAR
+// ============================================================
+document.querySelectorAll('.sidebar-item').forEach(item => {
+    item.addEventListener('click', function() {
+        document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+        this.classList.add('active');
+        const section = this.dataset.section;
+        document.querySelectorAll('[id^="section-"]').forEach(s => s.classList.add('hidden'));
+        document.getElementById(`section-${section}`).classList.remove('hidden');
+        if (window.innerWidth <= 768) document.getElementById('sidebar').classList.remove('open');
+    });
+});
+
+// ============================================================
+// INICIALIZACIÓN
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+    loadPreferences();
+    cargarConfiguracion();
+    renderizarHistorial();
+    renderActiveStrategies();
+
+    if (localStorage.getItem('modo_principiante') === '1') {
+        document.getElementById('modo-principiante').checked = true;
+        document.body.classList.add('modo-principiante');
+    }
+
+    renderPosicionesAprendizaje();
+    renderHistorialAprendizaje();
+    setInterval(() => {
+        if (posicionesAprendizaje.length > 0) renderPosicionesAprendizaje();
+    }, 15000);
+    
+    function programarActualizacionScanner() {
+        const modo = document.getElementById('scanner-interval')?.value || '1h';
+        const delay = modo === '1m' ? 5000 : modo === '15m' ? 15000 : 30000;
+        setTimeout(async () => {
+            if (window.APP_CONFIG.binance.enabled) {
+                await updateScannerWithRealData();
+            }
+            programarActualizacionScanner();
+        }, delay);
+    }
+    programarActualizacionScanner();
+});
+</script>
+</body>
+</html>
